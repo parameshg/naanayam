@@ -1,0 +1,46 @@
+﻿<div data-alert-success="" />
+<div data-alert-error="" />
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><b>Monthly Expenses By Category</b></h3>
+    </div>
+    <div class="panel-body">
+        <table width="100%">
+            <tr>
+                <td width="50%" style="padding:5px">
+                    <input type="hidden" data-ng-model="account.ID" data-ng-change="load()" />
+                    {{account.Name}} [{{account.Description}}]
+                </td>
+                <td width="50%" style="padding:5px">&nbsp;</td>
+                <td width="125px" style="padding:5px">
+                    <select class="form-control" id="id-month" name="id-month" style="width:125px" data-ng-model="month" data-ng-change="load()">
+                        <option value="">MONTH</option>
+                        <option data-ng-repeat="i in [ { Key : 1, Value : 'January' },
+                                                       { Key : 2, Value : 'Feburary' },
+                                                       { Key : 3, Value : 'March' },
+                                                       { Key : 4, Value : 'April' },
+                                                       { Key : 5, Value : 'May' },
+                                                       { Key : 6, Value : 'June' },
+                                                       { Key : 7, Value : 'July' },
+                                                       { Key : 8, Value : 'August' },
+                                                       { Key : 9, Value : 'September' },
+                                                       { Key : 10, Value : 'October' },
+                                                       { Key : 11, Value : 'November' },
+                                                       { Key : 12, Value : 'December' } ]" value="{{i.Key}}">
+                            {{i.Value}}
+                        </option>
+                    </select>
+                </td>
+                <td width="100px" style="padding:5px">
+                    <select class="form-control" id="id-year" name="id-year" style="width:100px" data-ng-model="year" data-ng-change="load()">
+                        <option value="">YEAR</option>
+                        <option data-ng-repeat="i in [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020]" value="{{i}}">{{i}}</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div id="chart-container" />
+        <input type="hidden" id="id-series" data-ng-model="series" />
+    </div>
+</div>  

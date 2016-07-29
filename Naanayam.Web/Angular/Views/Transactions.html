@@ -1,0 +1,182 @@
+﻿<div data-alert-success="" />
+<div data-alert-error="" />
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><b>Transactions</b></h3>
+    </div>
+    <div class="panel-body">
+        <table width="100%">
+            <tr>
+                <td width="50%" style="padding:5px">
+                    <input type="hidden" data-ng-model="account.ID" data-ng-change="load()" />
+                    {{account.Name}} [{{account.Description}}]
+                </td>
+                <td width="50%" style="padding:5px">&nbsp;</td>
+                <td width="125px" style="padding:5px">
+                    <select class="form-control" id="id-month" name="id-month" style="width:125px" data-ng-model="month" data-ng-change="load()">
+                        <option value="">MONTH</option>
+                        <option data-ng-repeat="i in [ { Key : 1, Value : 'January' },
+                                                       { Key : 2, Value : 'Feburary' },
+                                                       { Key : 3, Value : 'March' },
+                                                       { Key : 4, Value : 'April' },
+                                                       { Key : 5, Value : 'May' },
+                                                       { Key : 6, Value : 'June' },
+                                                       { Key : 7, Value : 'July' },
+                                                       { Key : 8, Value : 'August' },
+                                                       { Key : 9, Value : 'September' },
+                                                       { Key : 10, Value : 'October' },
+                                                       { Key : 11, Value : 'November' },
+                                                       { Key : 12, Value : 'December' } ]" value="{{i.Key}}">{{i.Value}}</option>
+                    </select>
+                </td>
+                <td width="100px" style="padding:5px">
+                    <select class="form-control" id="id-year" name="id-year" style="width:100px" data-ng-model="year" data-ng-change="load()">
+                        <option value="">YEAR</option>
+                        <option data-ng-repeat="i in [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020]" value="{{i}}">{{i}}</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <table>
+            <tr>
+                <td style="padding-right: 5px;">
+                    <div class="input-group">
+                        <input id="id-date" name="id-date" type="text" class="form-control" id="id-date" placeholder="Date" data-ng-model="date" uib-datepicker-popup="dd-MMMM-yyyy" is-open="calendar" datepicker-options="calendarOptions" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" data-ng-click="openCalendar()">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </td>
+                <td style="width: 150px; padding-right: 5px;">
+                    <select class="form-control" id="id-type" data-ng-model="type">
+                        <option value="">TYPE</option>
+                        <option data-ng-repeat="i in types" value="{{i}}">{{i}}</option>
+                    </select>
+                </td>
+                <td style="width: 150px; padding-right: 5px;">
+                    <select class="form-control" id="id-category" data-ng-change="loadSubCategory()" data-ng-model="category">
+                        <option value="">CATEGORY</option>
+                        <option data-ng-repeat="(key, data) in categories" value="{{key}}">{{key}}</option>
+                    </select>
+                </td>
+                <td style="width: 150px; padding-right: 5px;">
+                    <select class="form-control" id="id-sub-category" data-ng-model="subCategory">
+                        <option value="">CATEGORY</option>
+                        <option data-ng-repeat="i in subCategories" value="{{i}}">{{i}}</option>
+                    </select>
+                </td>
+                <td style="padding-right: 5px;">
+                    <input type="text" class="form-control" id="id-description" placeholder="Description" data-ng-model="description" />
+                </td>
+                <td style="padding-right: 5px;">
+                    <div class="input-group">
+                        <span class="input-group-addon">{{account.Currency}}</span>
+                        <input type="number" class=" form-control" id="id-amount" placeholder="Amount" data-ng-model="amount" />
+                        <span class="input-group-addon">{{amount | currency:"":2}}</span>
+                    </div>
+                </td>
+                <td style="padding-right: 5px;">
+                    <button class="btn btn-default" type="button" data-ng-click="save()"><span class="glyphicon glyphicon-floppy-save"></span></button>
+                </td>
+                <td style="padding-right: 5px;">
+                    <button class="btn btn-default" type="button" data-ng-click="clear()"><span class="glyphicon glyphicon-asterisk"></span></button>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Income</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th></th>
+                    </tr>
+                    <tr data-ng-repeat="i in transactions | filterByTransactionType:0" data-ng-click="edit(i.ID)">
+                        <td>{{i.Timestamp | date : "dd-MMM-yy"}}</td>
+                        <td>{{i.Category}}</td>
+                        <td>{{i.Description}}</td>
+                        <td>{{i.Amount}}</td>
+                        <td style="width: 50px; text-align: center;">
+                            <button class="btn btn-xs btn-danger" type="button" data-ng-click="delete(i.ID)"><span class="glyphicon glyphicon-remove"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><b>Total</b></td>
+                        <td><b>0.00</b></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">Expenses</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th></th>
+                    </tr>
+                    <tr data-ng-repeat="i in transactions | filterByTransactionType:1">
+                        <td>{{i.Timestamp | date : "dd-MMM-yy"}}</td>
+                        <td>{{i.Category}}</td>
+                        <td>{{i.Description}}</td>
+                        <td>{{i.Amount}}</td>
+                        <td style="width: 50px; text-align: center;">
+                            <button class="btn btn-xs btn-danger" type="button" data-ng-click="delete(i.ID)"><span class="glyphicon glyphicon-remove"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><b>Total</b></td>
+                        <td><b>0.00</b></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Transfers</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th></th>
+                    </tr>
+                    <tr data-ng-repeat="i in transactions | filterByTransactionType:2">
+                        <td>{{i.Timestamp | date : "dd-MMM-yy"}}</td>
+                        <td>{{i.Category}}</td>
+                        <td>{{i.Description}}</td>
+                        <td>{{i.Amount}}</td>
+                        <td style="width: 50px; text-align: center;">
+                            <button class="btn btn-xs btn-danger" type="button" data-ng-click="delete(i.ID)"><span class="glyphicon glyphicon-remove"></span></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><b>Total</b></td>
+                        <td><b>0.00</b></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background-color: #222222;
+}
+
+hr {
+    border-top: solid;
+    border-color: #222222;
+}
+
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: whitesmoke;
+    border-radius: 15px;
+    border: solid;
+}
+
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/*input,
+select,
+textarea {
+    max-width: 300px;
+}*/
