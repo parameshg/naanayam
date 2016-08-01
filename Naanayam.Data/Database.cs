@@ -74,17 +74,20 @@ namespace Naanayam.Data
 
             #region Maps
 
-            Mapper.CreateMap<KeyValuePair<string, string>, Entity.Settings>();
-            Mapper.CreateMap<Entity.Settings, KeyValuePair<string, string>>();
+            Mapper.Initialize(i =>
+            {
+                i.CreateMap<KeyValuePair<string, string>, Entity.Settings>();
+                i.CreateMap<Entity.Settings, KeyValuePair<string, string>>();
 
-            Mapper.CreateMap<User, Entity.User>();
-            Mapper.CreateMap<Entity.User, User>();
+                i.CreateMap<User, Entity.User>();
+                i.CreateMap<Entity.User, User>();
 
-            Mapper.CreateMap<Account, Entity.Account>();
-            Mapper.CreateMap<Entity.Account, Account>();
+                i.CreateMap<Account, Entity.Account>();
+                i.CreateMap<Entity.Account, Account>();
 
-            Mapper.CreateMap<Transaction, Entity.Transaction>();
-            Mapper.CreateMap<Entity.Transaction, Transaction>();
+                i.CreateMap<Transaction, Entity.Transaction>();
+                i.CreateMap<Entity.Transaction, Transaction>();
+            });
 
             #endregion
         }
