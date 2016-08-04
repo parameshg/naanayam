@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Temp\Naanayam</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Angular/App.js">
+      <publishTime>07/28/2016 20:34:31</publishTime>
+    </File>
+    <File Include="Angular/Controllers/Account.js">
+      <publishTime>07/26/2016 06:53:46</publishTime>
+    </File>
+    <File Include="Angular/Controllers/Home.js">
+      <publishTime>07/20/2016 20:25:00</publishTime>
+    </File>
+    <File Include="Angular/Controllers/Layout.js">
+      <publishTime>07/22/2016 19:57:19</publishTime>
+    </File>
+    <File Include="Angular/Controllers/Menu.js">
+      <publishTime>07/24/2016 18:41:08</publishTime>
+    </File>
+    <File Include="Angular/Controllers/Report.js">
+      <publishTime>07/29/2016 19:43:14</publishTime>
+    </File>
+    <File Include="Angular/Controllers/Settings.js">
+      <publishTime>07/27/2016 18:36:23</publishTime>
+    </File>
+    <File Include="Angular/Controllers/Transaction.js">
+      <publishTime>07/24/2016 18:41:43</publishTime>
+    </File>
+    <File Include="Angular/Directives/Display.js">
+      <publishTime>07/26/2016 06:56:43</publishTime>
+    </File>
+    <File Include="Angular/Filters/TransactionType.js">
+      <publishTime>07/23/2016 00:05:57</publishTime>
+    </File>
+    <File Include="Angular/Services/Account.js">
+      <publishTime>06/28/2016 21:24:25</publishTime>
+    </File>
+    <File Include="Angular/Services/Currency.js">
+      <publishTime>07/25/2016 18:17:55</publishTime>
+    </File>
+    <File Include="Angular/Services/Report.js">
+      <publishTime>07/29/2016 19:19:31</publishTime>
+    </File>
+    <File Include="Angular/Services/Settings.js">
+      <publishTime>07/27/2016 18:39:09</publishTime>
+    </File>
+    <File Include="Angular/Services/Transaction.js">
+      <publishTime>07/25/2016 18:19:08</publishTime>
+    </File>
+    <File Include="Angular/Views/Accounts.html">
+      <publishTime>07/23/2016 20:25:34</publishTime>
+    </File>
+    <File Include="Angular/Views/Home.html">
+      <publishTime>07/23/2016 19:51:56</publishTime>
+    </File>
+    <File Include="Angular/Views/Reports/Monthly-Expenses-Category-Pie.html">
+      <publishTime>07/29/2016 19:32:08</publishTime>
+    </File>
+    <File Include="Angular/Views/Settings.html">
+      <publishTime>07/27/2016 19:00:09</publishTime>
+    </File>
+    <File Include="Angular/Views/Transactions.html">
+      <publishTime>07/24/2016 18:29:55</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>06/19/2016 16:28:33</publishTime>
+    </File>
+    <File Include="bin/AutoMapper.dll">
+      <publishTime>08/01/2016 22:14:23</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.dll">
+      <publishTime>06/19/2016 16:28:34</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.SqlServer.dll">
+      <publishTime>06/19/2016 16:28:34</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
+      <publishTime>06/19/2016 16:28:36</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.EntityFramework.dll">
+      <publishTime>06/19/2016 16:28:37</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.Owin.dll">
+      <publishTime>06/19/2016 16:28:37</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.dll">
+      <publishTime>06/19/2016 16:28:54</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Host.SystemWeb.dll">
+      <publishTime>06/19/2016 16:28:54</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Cookies.dll">
+      <publishTime>06/19/2016 16:28:55</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.dll">
+      <publishTime>06/19/2016 16:28:55</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Facebook.dll">
+      <publishTime>06/19/2016 16:28:55</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Google.dll">
+      <publishTime>06/19/2016 16:28:55</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.MicrosoftAccount.dll">
+      <publishTime>06/19/2016 16:28:55</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.OAuth.dll">
+      <publishTime>06/19/2016 16:28:55</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Twitter.dll">
+      <publishTime>06/19/2016 16:28:55</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Practices.ServiceLocation.dll">
+      <publishTime>06/21/2016 20:47:43</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Practices.Unity.Configuration.dll">
+      <publishTime>06/21/2016 20:47:43</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Practices.Unity.dll">
+      <publishTime>06/21/2016 20:47:43</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Practices.Unity.Mvc.dll">
+      <publishTime>06/21/2016 20:48:41</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Practices.Unity.RegistrationByConvention.dll">
+      <publishTime>06/21/2016 20:47:43</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>06/19/2016 16:28:55</publishTime>
+    </File>
+    <File Include="bin/MongoDB.Bson.dll">
+      <publishTime>06/19/2016 16:28:31</publishTime>
+    </File>
+    <File Include="bin/MongoDB.Driver.Core.dll">
+      <publishTime>06/19/2016 16:28:31</publishTime>
+    </File>
+    <File Include="bin/MongoDB.Driver.dll">
+      <publishTime>06/19/2016 16:28:31</publishTime>
+    </File>
+    <File Include="bin/Naanayam.Data.dll">
+      <publishTime>08/04/2016 19:23:51</publishTime>
+    </File>
+    <File Include="bin/Naanayam.dll">
+      <publishTime>08/04/2016 19:23:50</publishTime>
+    </File>
+    <File Include="bin/Naanayam.Server.dll">
+      <publishTime>08/04/2016 19:23:51</publishTime>
+    </File>
+    <File Include="bin/Naanayam.Web.dll">
+      <publishTime>08/04/2016 19:23:52</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>06/29/2016 19:45:46</publishTime>
+    </File>
+    <File Include="bin/NLog.config">
+      <publishTime>07/01/2016 18:57:16</publishTime>
+    </File>
+    <File Include="bin/NLog.dll">
+      <publishTime>06/19/2016 16:28:32</publishTime>
+    </File>
+    <File Include="bin/Owin.dll">
+      <publishTime>06/19/2016 16:28:56</publishTime>
+    </File>
+    <File Include="bin/Polly.dll">
+      <publishTime>08/01/2016 22:06:21</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>06/19/2016 16:28:42</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>06/19/2016 16:28:54</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>06/19/2016 16:28:46</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>06/19/2016 16:28:54</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>06/19/2016 16:28:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>06/19/2016 16:28:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>06/19/2016 16:28:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>06/19/2016 16:28:54</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>06/19/2016 16:28:54</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>06/19/2016 16:28:54</publishTime>
+    </File>
+    <File Include="bin/WebActivatorEx.dll">
+      <publishTime>06/21/2016 20:48:41</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>06/19/2016 16:28:57</publishTime>
+    </File>
+    <File Include="Content/Site.css">
+      <publishTime>06/28/2016 20:50:02</publishTime>
+    </File>
+    <File Include="favicon.ico">
+      <publishTime>06/19/2016 16:18:00</publishTime>
+    </File>
+    <File Include="Fonts/glyphicons-halflings-regular.eot">
+      <publishTime>06/19/2016 16:18:01</publishTime>
+    </File>
+    <File Include="Fonts/glyphicons-halflings-regular.svg">
+      <publishTime>06/19/2016 16:18:01</publishTime>
+    </File>
+    <File Include="Fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>06/19/2016 16:18:01</publishTime>
+    </File>
+    <File Include="Fonts/glyphicons-halflings-regular.woff">
+      <publishTime>06/19/2016 16:18:01</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>06/19/2016 16:18:00</publishTime>
+    </File>
+    <File Include="Images/1.jpg">
+      <publishTime>07/23/2016 19:33:54</publishTime>
+    </File>
+    <File Include="Images/2.jpg">
+      <publishTime>07/23/2016 19:45:52</publishTime>
+    </File>
+    <File Include="Images/3.jpg">
+      <publishTime>07/23/2016 19:53:48</publishTime>
+    </File>
+    <File Include="LICENSE.TXT">
+      <publishTime>07/29/2016 21:19:13</publishTime>
+    </File>
+    <File Include="NLog.config">
+      <publishTime>07/01/2016 18:57:16</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>07/01/2016 19:21:41</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>06/23/2016 19:17:17</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout.cshtml">
+      <publishTime>07/29/2016 21:31:07</publishTime>
+    </File>
+    <File Include="Views/Web.config">
+      <publishTime>06/29/2016 19:47:09</publishTime>
+    </File>
+    <File Include="Views/_ViewStart.cshtml">
+      <publishTime>06/19/2016 16:18:00</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>08/04/2016 19:23:53</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
