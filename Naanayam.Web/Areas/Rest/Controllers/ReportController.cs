@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -21,7 +22,7 @@ namespace Naanayam.Web.Areas.Rest.Controllers
 
             if (year.HasValue && month.HasValue)
             {
-                searchFrom = DateTime.Parse(string.Format("01/{0}/{1}", month.Value, year.Value));
+                searchFrom = DateTime.ParseExact(string.Format("01/{0}/{1}", month.Value, year.Value), "dd/M/yyyy", CultureInfo.InvariantCulture);
                 searchTo = searchFrom.Value.AddMonths(1);
             }
 
