@@ -6,9 +6,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
+using Naanayam.Web.Filters;
 
 namespace Naanayam.Web.Areas.Rest.Controllers
 {
+    [HandleException]
     public class SettingsController : Base
     {
         #region Currency
