@@ -212,6 +212,8 @@
     <Compile Include="Areas\Rest\RestAreaRegistration.cs" />
     <Compile Include="Controllers\Base.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Filters\HandleException.cs" />
+    <Compile Include="Filters\RequestLogger.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -252,6 +254,7 @@
     <Content Include="Images\1.jpg" />
     <Content Include="Images\2.jpg" />
     <Content Include="Images\3.jpg" />
+    <Content Include="Images\error.png" />
     <Content Include="LICENSE.TXT" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -302,6 +305,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Views\Shared\Error.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

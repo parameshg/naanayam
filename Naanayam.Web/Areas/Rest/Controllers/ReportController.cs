@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
+using Naanayam.Web.Filters;
 
 namespace Naanayam.Web.Areas.Rest.Controllers
 {
+    [HandleException]
     public class ReportController : Base
     {
         // GET: api/account/5/report/monthly-expenses-by-category/2016/8

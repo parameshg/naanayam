@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web.Http;
 using System.Web.Http.Results;
+using System.Web.Http;
+using Naanayam.Web.Filters;
 
 namespace Naanayam.Web.Areas.Rest.Controllers
 {
+    [HandleException]
     public class AccountController : Base
     {
         // GET: api/accounts
@@ -20,7 +22,7 @@ namespace Naanayam.Web.Areas.Rest.Controllers
 
         // POST: api/accounts
         [Route("api/accounts")]
-        public async Task<JsonResult<List<Account>>> Post([FromBody]Account o)
+        public async Task<JsonResult<List<Account>>> Post(Account o)
         {
             List<Account> result = new List<Account>();
 
@@ -33,7 +35,7 @@ namespace Naanayam.Web.Areas.Rest.Controllers
 
         // PUT: api/accounts
         [Route("api/accounts")]
-        public async Task<JsonResult<List<Account>>> Put([FromBody]Account o)
+        public async Task<JsonResult<List<Account>>> Put(Account o)
         {
             List<Account> result = new List<Account>();
 
