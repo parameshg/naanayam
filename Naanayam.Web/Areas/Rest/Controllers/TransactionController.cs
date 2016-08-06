@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -21,7 +22,7 @@ namespace Naanayam.Web.Areas.Rest.Controllers
 
             if (year.HasValue && month.HasValue)
             {
-                searchFrom = DateTime.Parse(string.Format("01/{0}/{1}", month.Value, year.Value));
+                searchFrom = DateTime.ParseExact(string.Format("01/{0}/{1}", month.Value, year.Value), "dd/M/yyyy", CultureInfo.InvariantCulture);
                 searchTo = searchFrom.Value.AddMonths(1);
             }
 
@@ -32,14 +33,14 @@ namespace Naanayam.Web.Areas.Rest.Controllers
 
         // POST: api/account/transaction
         [Route("api/transaction")]
-        public async Task Post([FromBody]Transaction o)
+        public async Task Post(Transaction o)
         {
             await Server.CreateTransactionAsync(o.Account, o.Timestamp, o.Type, o.Category, o.Description, o.Amount);
         }
 
         // PUT: api/account/transaction
         [Route("api/transaction")]
-        public async Task Put([FromBody]Transaction o)
+        public async Task Put(Transaction o)
         {
             await Server.UpdateTransactionAsync(o.ID, o.Timestamp, o.Type, o.Category, o.Description, o.Amount);
         }
