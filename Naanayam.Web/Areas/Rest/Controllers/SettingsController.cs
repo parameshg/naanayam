@@ -32,6 +32,7 @@ namespace Naanayam.Web.Areas.Rest.Controllers
         #region Type
 
         // GET: api/settings/type
+        [HttpGet]
         [Route("api/settings/type")]
         public async Task<JsonResult<List<string>>> GetType()
         {
@@ -47,7 +48,6 @@ namespace Naanayam.Web.Areas.Rest.Controllers
         #region Category
 
         // GET: api/settings/category
-        [HttpGet]
         [Route("api/settings/category")]
         public async Task<JsonResult<Dictionary<string, List<string>>>> GetCategory()
         {
