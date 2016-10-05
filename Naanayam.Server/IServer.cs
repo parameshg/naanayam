@@ -38,17 +38,17 @@ namespace Naanayam.Server
 
         #region Category
 
-        Dictionary<string, List<string>> GetTransactionCategories();
+        List<string> GetTransactionCategories(string transactionType);
 
-        bool AddTransactionCategory(string category);
+        bool AddTransactionCategory(string transactionType, string transactionCategory);
 
-        bool RemoveTransactionCategory(string category);
+        bool RemoveTransactionCategory(string transactionType, string transactionCategory);
 
-        List<string> GetTransactionCategories(string category);
+        List<string> GetTransactionCategories(string transactionType, string transactionCategory);
 
-        bool AddTransactionCategory(string category, string subCategory);
+        bool AddTransactionCategory(string transactionType, string transactionCategory, string transactionSubCategory);
 
-        bool RemoveTransactionCategory(string category, string subCategory);
+        bool RemoveTransactionCategory(string transactionType, string transactionCategory, string transactionSubCategory);
 
         #endregion
 

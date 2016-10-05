@@ -1,7 +1,7 @@
 ﻿app.service("$$transaction", function ($http) {
 
     this.getTypes = function (success, error) {
-        $http.get("api/settings/type")
+        $http.get("api/settings/types")
         .then(function (response) {
             success(response);
         }, function (response) {
@@ -9,8 +9,17 @@
         });
     };
 
-    this.getCategories = function (success, error) {
-        $http.get("api/settings/category")
+    this.getCategories = function (type, success, error) {
+        $http.get("api/settings/types/" + type + "/category")
+        .then(function (response) {
+            success(response);
+        }, function (response) {
+            error(response);
+        });
+    };
+
+    this.getSubCategories = function (type, category, success, error) {
+        $http.get("api/settings/types/" + type + "." + category + "/category")
         .then(function (response) {
             success(response);
         }, function (response) {

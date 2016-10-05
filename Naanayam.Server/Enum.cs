@@ -7,8 +7,6 @@ namespace Naanayam.Server
 
         public static readonly string Currency = "currency";
 
-        public static readonly string TransactionCategory = "transaction-category";
-
-        public static readonly string TransactionType = "transaction-type";
+        public static readonly string Type = "type";
     }
 }

@@ -3,8 +3,9 @@
     $scope.currencies = [];
     $scope.types = [];
     $scope.categories = [];
-    $scope.category = "";
-    $scope.subCategory = "";
+    $scope.subCategories = [];
+
+    $scope.selectedType = "";
     $scope.selectedCategory = "";
 
     $$settings.getCurrencies(function (response) {
@@ -19,50 +20,51 @@
         Error("Types cannot be loaded.");
     });
 
-    $$settings.getCategories(function (response) {
-        $scope.categories = response.data;
-        if ($scope.categories.length > 0) {
-            $scope.category = $scope.categories[0];
-        }
-    }, function (response) {
-        Error("Categories cannot be loaded.");
-    });
+    $scope.getCategories = function (type) {
+        $scope.selectedType = type;
+        $$settings.getCategories(type, function (response) {
+            $scope.categories = response.data;
+        }, function (response) {
+            Error("Categories cannot be loaded.");
+        });
+    }
 
-    $scope.getCategories = function (category) {
+    $scope.getSubCategories = function (category) {
         $scope.selectedCategory = category;
+        $$settings.getSubCategories($scope.selectedType, category, function (response) {
+            $scope.subCategories = response.data;
+        }, function (response) {
+            Error("Categories cannot be loaded.");
+        });
     }
 
     $scope.addCategory = function (category) {
-        $$settings.addCategory(category, function (response) {
+        $$settings.addCategory($scope.selectedType, category, function (response) {
             $scope.categories = response.data;
-            $scope.category = ""
         }, function (response) {
             Error("Categories cannot be added.");
         });
     }
 
     $scope.removeCategory = function (category) {
-        $$settings.removeCategory(category, function (response) {
+        $$settings.removeCategory($scope.selectedType, category, function (response) {
             $scope.categories = response.data;
-            $scope.category = ""
         }, function (response) {
             Error("Categories cannot be removed.");
         });
     }
 
-    $scope.addSubCategory = function (category, subCategory) {
-        $$settings.addSubCategory(category, subCategory, function (response) {
-            $scope.categories = response.data;
-            $scope.subCategory = ""
+    $scope.addSubCategory = function (subCategory) {
+        $$settings.addSubCategory($scope.selectedType, $scope.selectedCategory, subCategory, function (response) {
+            $scope.subCategories = response.data;
         }, function (response) {
             Error("Categories cannot be added.");
         });
     }
 
-    $scope.removeSubCategory = function (category, subCategory) {
-        $$settings.removeSubCategory(category, subCategory, function (response) {
-            $scope.categories = response.data;
-            $scope.subCategory = ""
+    $scope.removeSubCategory = function (subCategory) {
+        $$settings.removeSubCategory($scope.selectedType, $scope.selectedCategory, subCategory, function (response) {
+            $scope.subCategories = response.data;
         }, function (response) {
             Error("Categories cannot be removed.");
         });

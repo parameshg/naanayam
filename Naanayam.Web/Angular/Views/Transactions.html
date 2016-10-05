@@ -52,7 +52,7 @@
                     </div>
                 </td>
                 <td style="width: 150px; padding-right: 5px;">
-                    <select class="form-control" id="id-type" data-ng-model="type">
+                    <select class="form-control" id="id-type" data-ng-change="loadCategory()" data-ng-model="type">
                         <option value="">TYPE</option>
                         <option data-ng-repeat="i in types" value="{{i}}">{{i}}</option>
                     </select>
@@ -60,7 +60,7 @@
                 <td style="width: 150px; padding-right: 5px;">
                     <select class="form-control" id="id-category" data-ng-change="loadSubCategory()" data-ng-model="category">
                         <option value="">CATEGORY</option>
-                        <option data-ng-repeat="(key, data) in categories" value="{{key}}">{{key}}</option>
+                        <option data-ng-repeat="(key, data) in categories" value="{{data}}">{{data}}</option>
                     </select>
                 </td>
                 <td style="width: 150px; padding-right: 5px;">

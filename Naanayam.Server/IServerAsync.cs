@@ -31,17 +31,17 @@ namespace Naanayam.Server
 
         #region Category
 
-        Task<Dictionary<string, List<string>>> GetTransactionCategoriesAsync();
+        Task<List<string>> GetTransactionCategoriesAsync(string transactionType);
 
-        Task<bool> AddTransactionCategoryAsync(string category);
+        Task<bool> AddTransactionCategoryAsync(string transactionType, string transactionCategory);
 
-        Task<bool> RemoveTransactionCategoryAsync(string category);
+        Task<bool> RemoveTransactionCategoryAsync(string transactionType, string transactionCategory);
 
-        Task<List<string>> GetTransactionCategoriesAsync(string category);
+        Task<List<string>> GetTransactionCategoriesAsync(string transactionType, string transactionCategory);
 
-        Task<bool> AddTransactionCategoryAsync(string category, string subCategory);
+        Task<bool> AddTransactionCategoryAsync(string transactionType, string transactionCategory, string transactionSubCategory);
 
-        Task<bool> RemoveTransactionCategoryAsync(string category, string subCategory);
+        Task<bool> RemoveTransactionCategoryAsync(string transactionType, string transactionCategory, string transactionSubCategory);
 
         #endregion
 

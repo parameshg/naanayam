@@ -205,6 +205,7 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Rest\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Rest\Controllers\AdministrationController.cs" />
     <Compile Include="Areas\Rest\Controllers\Base.cs" />
     <Compile Include="Areas\Rest\Controllers\ReportController.cs" />
     <Compile Include="Areas\Rest\Controllers\SettingsController.cs" />

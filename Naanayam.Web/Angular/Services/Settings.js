@@ -10,7 +10,7 @@
     };
 
     this.getTypes = function (successCallback, errorCallback) {
-        $http.get("api/settings/type")
+        $http.get("api/settings/types")
         .then(function (response) {
             successCallback(response);
         }, function (response) {
@@ -18,8 +18,8 @@
         });
     };
 
-    this.getCategories = function (successCallback, errorCallback) {
-        $http.get("api/settings/category")
+    this.getCategories = function (type, successCallback, errorCallback) {
+        $http.get("api/settings/types/" + type + "/category")
         .then(function (response) {
             successCallback(response);
         }, function (response) {
@@ -27,10 +27,19 @@
         });
     };
 
-    this.addCategory = function (category, successCallback, errorCallback) {
+    this.getSubCategories = function (type, category, successCallback, errorCallback) {
+        $http.get("api/settings/types/" + type + "/category/" + category)
+        .then(function (response) {
+            successCallback(response);
+        }, function (response) {
+            errorCallback(response);
+        });
+    };
+
+    this.addCategory = function (type, category, successCallback, errorCallback) {
         var config = { headers: { "Content-Type": "application/json" } };
-        var data = category;
-        $http.post("api/settings/category", data, config)
+        var data = { "Key": "category", "Value" : category };
+        $http.post("api/settings/types/" + type + "/category", data, config)
         .then(function (response) {
             successCallback(response);
         }, function (response) {
@@ -38,9 +47,9 @@
         });
     }
 
-    this.removeCategory = function (category, successCallback, errorCallback) {
+    this.removeCategory = function (type, category, successCallback, errorCallback) {
         var config = { headers: { "Content-Type": "application/json" } };
-        $http.delete("api/settings/category/" + category, config)
+        $http.delete("api/settings/types/" + type + "/category/" + category, config)
         .then(function (response) {
             successCallback(response);
         }, function (response) {
@@ -48,10 +57,10 @@
         });
     }
 
-    this.addSubCategory = function (category, subCategory, successCallback, errorCallback) {
+    this.addSubCategory = function (type, category, subCategory, successCallback, errorCallback) {
         var config = { headers: { "Content-Type": "application/json" } };
-        var data = subCategory;
-        $http.post("api/settings/sub-category/" + category, data, config)
+        var data = { "Key": "subCategory", "Value": subCategory };
+        $http.post("api/settings/types/" + type + "/category/" + category, data, config)
         .then(function (response) {
             successCallback(response);
         }, function (response) {
@@ -59,9 +68,9 @@
         });
     }
 
-    this.removeSubCategory = function (category, subCategory, successCallback, errorCallback) {
+    this.removeSubCategory = function (type, category, subCategory, successCallback, errorCallback) {
         var config = { headers: { "Content-Type": "application/json" } };
-        $http.delete("api/settings/sub-category/" + category + "/" + subCategory, config)
+        $http.delete("api/settings/types/" + type + "/category/" + category + "/" + subCategory, config)
         .then(function (response) {
             successCallback(response);
         }, function (response) {
