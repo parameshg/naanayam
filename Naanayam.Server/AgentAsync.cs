@@ -178,88 +178,7 @@ namespace Naanayam.Server
 
         #region Category
 
-        public async Task<Dictionary<string, List<string>>> GetTransactionCategoriesAsync()
-        {
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
-
-            try
-            {
-                if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
-
-                string json = await GetUserSettingsAsync(Enum.TransactionCategory);
-
-                foreach (var i in await Serializer<Dictionary<string, List<string>>>.Current.DeserializeFromJsonAsync(json))
-                    result.Add(i.Key, new List<string>(i.Value));
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-
-            return result;
-        }
-
-        public async Task<bool> AddTransactionCategoryAsync(string category)
-        {
-            bool result = false;
-
-            try
-            {
-                if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
-
-                Dictionary<string, List<string>> o = new Dictionary<string, List<string>>();
-
-                foreach (var i in await GetTransactionCategoriesAsync())
-                    o.Add(i.Key, new List<string>(i.Value));
-
-                o.Add(category, new List<string>());
-
-                string json = await Serializer<Dictionary<string, List<string>>>.Current.SerializeToJsonAsync(o);
-
-                if (await IsUserSettingsExistsAsync(Enum.TransactionCategory))
-                    await UpdateUserSettingsAsync(Enum.TransactionCategory, json);
-                else
-                    await CreateUserSettingsAsync(Enum.TransactionCategory, json);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-
-            return result;
-        }
-
-        public async Task<bool> RemoveTransactionCategoryAsync(string category)
-        {
-            bool result = false;
-
-            try
-            {
-                if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
-
-                Dictionary<string, List<string>> o = new Dictionary<string, List<string>>();
-
-                foreach (var i in await GetTransactionCategoriesAsync())
-                    o.Add(i.Key, new List<string>(i.Value));
-
-                o.Remove(category);
-
-                string json = await Serializer<Dictionary<string, List<string>>>.Current.SerializeToJsonAsync(o);
-
-                await UpdateUserSettingsAsync(Enum.TransactionCategory, json);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-
-            return result;
-        }
-
-        public async Task<List<string>> GetTransactionCategoriesAsync(string category)
+        public async Task<List<string>> GetTransactionCategoriesAsync(string transactionType)
         {
             List<string> result = new List<string>();
 
@@ -268,14 +187,9 @@ namespace Naanayam.Server
                 if (!await IsUserExistsAsync())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                foreach (var i in await GetTransactionCategoriesAsync())
-                {
-                    if (i.Key.Equals(category))
-                    {
-                        result.AddRange(i.Value);
-                        break;
-                    }
-                }
+                string json = await GetUserSettingsAsync(GetCategoryKey(transactionType));
+
+                result.AddRange(await Serializer<List<string>>.Current.DeserializeFromJsonAsync(json));
             }
             catch (Exception e)
             {
@@ -285,7 +199,7 @@ namespace Naanayam.Server
             return result;
         }
 
-        public async Task<bool> AddTransactionCategoryAsync(string category, string subCategory)
+        public async Task<bool> AddTransactionCategoryAsync(string transactionType, string transactionCategory)
         {
             bool result = false;
 
@@ -294,26 +208,18 @@ namespace Naanayam.Server
                 if (!await IsUserExistsAsync())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                Dictionary<string, List<string>> o = new Dictionary<string, List<string>>();
+                List<string> o = new List<string>();
 
-                foreach (var i in await GetTransactionCategoriesAsync())
-                    o.Add(i.Key, new List<string>(i.Value));
+                o.AddRange(await GetTransactionCategoriesAsync(transactionType));
 
-                foreach (var i in o)
-                {
-                    if (i.Key.Equals(category))
-                    {
-                        i.Value.Add(subCategory);
-                        break;
-                    }
-                }
+                o.Add(transactionCategory);
 
-                string json = await Serializer<Dictionary<string, List<string>>>.Current.SerializeToJsonAsync(o);
+                string json = await Serializer<List<string>>.Current.SerializeToJsonAsync(o);
 
-                if (await IsUserSettingsExistsAsync(Enum.TransactionCategory))
-                    await UpdateUserSettingsAsync(Enum.TransactionCategory, json);
+                if (await IsUserSettingsExistsAsync(GetCategoryKey(transactionType)))
+                    await UpdateUserSettingsAsync(GetCategoryKey(transactionType), json);
                 else
-                    await CreateUserSettingsAsync(Enum.TransactionCategory, json);
+                    await CreateUserSettingsAsync(GetCategoryKey(transactionType), json);
             }
             catch (Exception e)
             {
@@ -323,7 +229,7 @@ namespace Naanayam.Server
             return result;
         }
 
-        public async Task<bool> RemoveTransactionCategoryAsync(string category, string subCategory)
+        public async Task<bool> RemoveTransactionCategoryAsync(string transactionType, string transactionCategory)
         {
             bool result = false;
 
@@ -332,26 +238,102 @@ namespace Naanayam.Server
                 if (!await IsUserExistsAsync())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                Dictionary<string, List<string>> o = new Dictionary<string, List<string>>();
+                // remove category
 
-                foreach (var i in await GetTransactionCategoriesAsync())
-                    o.Add(i.Key, new List<string>(i.Value));
+                List<string> o = new List<string>();
 
-                foreach (var i in o)
-                {
-                    if (i.Key.Equals(category))
-                    {
-                        i.Value.Remove(subCategory);
-                        break;
-                    }
-                }
+                o.AddRange(await GetTransactionCategoriesAsync(transactionType));
 
-                string json = await Serializer<Dictionary<string, List<string>>>.Current.SerializeToJsonAsync(o);
+                o.Remove(transactionCategory);
 
-                if (await IsUserSettingsExistsAsync(Enum.TransactionCategory))
-                    await UpdateUserSettingsAsync(Enum.TransactionCategory, json);
+                string json = await Serializer<List<string>>.Current.SerializeToJsonAsync(o);
+
+                await UpdateUserSettingsAsync(GetCategoryKey(transactionType), json);
+
+                // remove its corresponding sub categories
+
+                await DeleteUserSettingsAsync(GetCategoryKey(transactionType, transactionCategory));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
+            return result;
+        }
+
+        public async Task<List<string>> GetTransactionCategoriesAsync(string transactionType, string transactionCategory)
+        {
+            List<string> result = new List<string>();
+
+            try
+            {
+                if (!await IsUserExistsAsync())
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+
+                string json = await GetUserSettingsAsync(GetCategoryKey(transactionType + "." + transactionCategory));
+
+                result.AddRange(await Serializer<List<string>>.Current.DeserializeFromJsonAsync(json));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
+            return result;
+        }
+
+        public async Task<bool> AddTransactionCategoryAsync(string transactionType, string transactionCategory, string transactionSubCategory)
+        {
+            bool result = false;
+
+            try
+            {
+                if (!await IsUserExistsAsync())
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+
+                List<string> o = new List<string>();
+
+                o.AddRange(await GetTransactionCategoriesAsync(transactionType, transactionCategory));
+
+                o.Add(transactionSubCategory);
+
+                string json = await Serializer<List<string>>.Current.SerializeToJsonAsync(o);
+
+                if (await IsUserSettingsExistsAsync(GetCategoryKey(transactionType, transactionCategory)))
+                    await UpdateUserSettingsAsync(GetCategoryKey(transactionType, transactionCategory), json);
                 else
-                    await CreateUserSettingsAsync(Enum.TransactionCategory, json);
+                    await CreateUserSettingsAsync(GetCategoryKey(transactionType, transactionCategory), json);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
+            return result;
+        }
+
+        public async Task<bool> RemoveTransactionCategoryAsync(string transactionType, string transactionCategory, string transactionSubCategory)
+        {
+            bool result = false;
+
+            try
+            {
+                if (!await IsUserExistsAsync())
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+
+                List<string> o = new List<string>();
+
+                o.AddRange(await GetTransactionCategoriesAsync(transactionType, transactionCategory));
+
+                o.Remove(transactionSubCategory);
+
+                string json = await Serializer<List<string>>.Current.SerializeToJsonAsync(o);
+
+                if (await IsUserSettingsExistsAsync(GetCategoryKey(transactionType, transactionCategory)))
+                    await UpdateUserSettingsAsync(GetCategoryKey(transactionType, transactionCategory), json);
+                else
+                    await CreateUserSettingsAsync(GetCategoryKey(transactionType, transactionCategory), json);
             }
             catch (Exception e)
             {
@@ -374,7 +356,7 @@ namespace Naanayam.Server
                 if (!await IsUserExistsAsync())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                result.AddRange(await Database.GetEnumValuesAsync(Enum.TransactionType));
+                result.AddRange(await Database.GetEnumValuesAsync(Enum.Type));
             }
             catch (Exception e)
             {
@@ -393,7 +375,7 @@ namespace Naanayam.Server
                 if (!await IsUserExistsAsync())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                result = await Database.AddEnumValueAsync(Enum.TransactionType, transactionType);
+                result = await Database.AddEnumValueAsync(Enum.Type, transactionType);
             }
             catch (Exception e)
             {
@@ -412,7 +394,7 @@ namespace Naanayam.Server
                 if (!await IsUserExistsAsync())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                result = await Database.RemoveEnumValueAsync(Enum.TransactionType, transactionType);
+                result = await Database.RemoveEnumValueAsync(Enum.Type, transactionType);
             }
             catch (Exception e)
             {
@@ -529,17 +511,27 @@ namespace Naanayam.Server
 
             if (result)
             {
-                Dictionary<string, List<string>> category = new Dictionary<string, List<string>>();
+                foreach (string type in await Database.GetEnumValuesAsync(Enum.Type))
+                {
+                    List<string> categories = new List<string>();
 
-                category.Add("Travel", new List<string>(new string[] { "Car", "Bus", "Train" }));
+                    categories.AddRange(await Database.GetEnumValuesAsync(GetCategoryKey(type)));
 
-                category.Add("Utility", new List<string>(new string[] { "Mobile", "Internet", "Electricity" }));
+                    string json = await Serializer<List<string>>.Current.SerializeToJsonAsync(categories);
 
-                category.Add("Tax", new List<string>(new string[] { "Income Tax", "Sales Tax" }));
+                    await Database.CreateUserSettingsAsync(username, GetCategoryKey(type), json);
 
-                string json = await Serializer<Dictionary<string, List<string>>>.Current.SerializeToJsonAsync(category);
+                    foreach(string category in categories)
+                    {
+                        List<string> subCategories = new List<string>();
 
-                await Database.CreateUserSettingsAsync(username, Enum.TransactionCategory, json);
+                        subCategories.AddRange(await Database.GetEnumValuesAsync(GetCategoryKey(type, category)));
+
+                        json = await Serializer<List<string>>.Current.SerializeToJsonAsync(subCategories);
+
+                        await Database.CreateUserSettingsAsync(username, GetCategoryKey(type, category), json);
+                    }
+                }
             }
 
             return result;
@@ -881,7 +873,7 @@ namespace Naanayam.Server
                 if (!await IsUserExistsAsync())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                Dictionary<string, List<string>> categories = await GetTransactionCategoriesAsync();
+                List<string> categories = await GetTransactionCategoriesAsync(TransactionType.Expense.ToString());
 
                 List<Transaction> transactions = await GetTransactionsAsync(accountId, transactionDateFrom,transactionDateTo);
 
@@ -1143,6 +1135,36 @@ namespace Naanayam.Server
 
                 await Database.CreateSettingsAsync("mail.password", "password");
 
+                // Create Enum Values
+
+                foreach (string i in GetEnumValues(typeof(Role)))
+                    await Database.AddEnumValueAsync(Enum.Role, i);
+
+                foreach (string i in GetEnumValues(typeof(Currency)))
+                    await Database.AddEnumValueAsync(Enum.Currency, i);
+
+                await Database.AddEnumValueAsync(Enum.Type, "Income");
+                await Database.AddEnumValueAsync(Enum.Type, "Expense");
+                await Database.AddEnumValueAsync(Enum.Type, "Transfer");
+
+                await Database.AddEnumValueAsync(GetCategoryKey("Income"), "Salary");
+
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense"), "Travel");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Travel"), "Bus");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Travel"), "Train");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Travel"), "Car");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Travel"), "Air");
+
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense"), "Utility");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Utility"), "Power");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Utility"), "Gas");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Utility"), "Water");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Utility"), "Internet");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Utility"), "Mobile");
+
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense"), "Tax");
+                await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Tax"), "IncomeTax");
+
                 #region Create Users
 
                 // Create Anonymous Internal User and Assign Role
@@ -1164,17 +1186,27 @@ namespace Naanayam.Server
 
                     await Database.EnableUserAsync(defaultAdminUsername, true);
 
-                    Dictionary<string, List<string>> category = new Dictionary<string, List<string>>();
+                    foreach (string type in await Database.GetEnumValuesAsync(Enum.Type))
+                    {
+                        List<string> categories = new List<string>();
 
-                    category.Add("Travel", new List<string>(new string[] { "Car", "Bus", "Train" }));
+                        categories.AddRange(await Database.GetEnumValuesAsync(GetCategoryKey(type)));
 
-                    category.Add("Utility", new List<string>(new string[] { "Mobile", "Internet", "Electricity" }));
+                        string json = await Serializer<List<string>>.Current.SerializeToJsonAsync(categories);
 
-                    category.Add("Tax", new List<string>(new string[] { "Income Tax", "Sales Tax" }));
+                        await Database.CreateUserSettingsAsync(defaultAdminUsername, GetCategoryKey(type), json);
 
-                    string json = await Serializer<Dictionary<string, List<string>>>.Current.SerializeToJsonAsync(category);
+                        foreach (string category in categories)
+                        {
+                            List<string> subCategories = new List<string>();
 
-                    await Database.CreateUserSettingsAsync(Constants.User.ADMINISTRATOR, Enum.TransactionCategory, json);
+                            subCategories.AddRange(await Database.GetEnumValuesAsync(GetCategoryKey(type, category)));
+
+                            json = await Serializer<List<string>>.Current.SerializeToJsonAsync(subCategories);
+
+                            await Database.CreateUserSettingsAsync(defaultAdminUsername, GetCategoryKey(type, category), json);
+                        }
+                    }
 
                     await Database.AddUserToRoleAsync(defaultAdminUsername, defaultAdminRole.ToString());
 
@@ -1182,18 +1214,6 @@ namespace Naanayam.Server
                 }
 
                 #endregion
-
-                // Create Enum Values
-
-                foreach (string i in GetEnumValues(typeof(Role)))
-                    await Database.AddEnumValueAsync(Enum.Role, i);
-
-                foreach (string i in GetEnumValues(typeof(Currency)))
-                    await Database.AddEnumValueAsync(Enum.Currency, i);
-
-                await Database.AddEnumValueAsync(Enum.TransactionType, "Income");
-                await Database.AddEnumValueAsync(Enum.TransactionType, "Expense");
-                await Database.AddEnumValueAsync(Enum.TransactionType, "Transfer");
 
                 #endregion
             }

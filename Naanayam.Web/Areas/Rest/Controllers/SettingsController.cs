@@ -29,12 +29,12 @@ namespace Naanayam.Web.Areas.Rest.Controllers
 
         #endregion
 
-        #region Type
+        #region Types
 
-        // GET: api/settings/type
+        // GET: api/settings/types
         [HttpGet]
-        [Route("api/settings/type")]
-        public async Task<JsonResult<List<string>>> GetType()
+        [Route("api/settings/types")]
+        public async Task<JsonResult<List<string>>> GetTypes()
         {
             List<string> result = new List<string>();
 
@@ -47,74 +47,84 @@ namespace Naanayam.Web.Areas.Rest.Controllers
 
         #region Category
 
-        // GET: api/settings/category
-        [Route("api/settings/category")]
-        public async Task<JsonResult<Dictionary<string, List<string>>>> GetCategory()
+        // GET: api/settings/types/income/category
+        [Route("api/settings/types/{type}/category")]
+        public async Task<JsonResult<List<string>>> GetCategory(string type)
         {
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            List<string> result = new List<string>();
 
-            foreach (var i in await Server.GetTransactionCategoriesAsync())
-                result.Add(i.Key, new List<string>(i.Value));
+            result.AddRange(await Server.GetTransactionCategoriesAsync(type));
 
             return Json(result);
         }
 
-        // POST: api/settings/category
+        // GET: api/settings/types/income/category/travel
+        [Route("api/settings/types/{type}/category/{category}")]
+        public async Task<JsonResult<List<string>>> GetCategory(string type, string category)
+        {
+            List<string> result = new List<string>();
+
+            result.AddRange(await Server.GetTransactionCategoriesAsync(type, category));
+
+            return Json(result);
+        }
+
+        // POST: api/settings/types/income/category
         [HttpPost]
-        [Route("api/settings/category")]
-        public async Task<JsonResult<Dictionary<string, List<string>>>> AddCategory([FromBody]string o)
+        [Route("api/settings/types/{type}/category")]
+        public async Task<JsonResult<List<string>>> AddCategory(string type, [FromBody] KeyValuePair<string, string> category)
         {
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            List<string> result = new List<string>();
 
-            await Server.AddTransactionCategoryAsync(o);
+            if (!string.IsNullOrEmpty(type) && !string.IsNullOrEmpty(category.Value))
+                await Server.AddTransactionCategoryAsync(type, category.Value);
 
-            foreach (var i in await Server.GetTransactionCategoriesAsync())
-                result.Add(i.Key, new List<string>(i.Value));
+            result.AddRange(await Server.GetTransactionCategoriesAsync(type));
 
             return Json(result);
         }
 
-        // DELETE: api/settings/category/5
+        // DELETE: api/settings/types/expense/category
         [HttpDelete]
-        [Route("api/settings/category/{category}")]
-        public async Task<JsonResult<Dictionary<string, List<string>>>> RemoveCategory(string category)
+        [Route("api/settings/types/{type}/category/{category}")]
+        public async Task<JsonResult<List<string>>> RemoveCategory(string type, string category)
         {
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            List<string> result = new List<string>();
 
-            await Server.RemoveTransactionCategoryAsync(category);
+            if (!string.IsNullOrEmpty(type) && !string.IsNullOrEmpty(category))
+                await Server.RemoveTransactionCategoryAsync(type, category);
 
-            foreach (var i in await Server.GetTransactionCategoriesAsync())
-                result.Add(i.Key, new List<string>(i.Value));
+            result.AddRange(await Server.GetTransactionCategoriesAsync(type));
 
             return Json(result);
         }
 
-        // POST: api/settings/sub-category/5
+        // POST: api/settings/types/expense/category/tax
         [HttpPost]
-        [Route("api/settings/sub-category/{category}")]
-        public async Task<JsonResult<Dictionary<string, List<string>>>> AddSubCategory(string category, [FromBody]string subCategory)
+        [Route("api/settings/types/{type}/category/{category}")]
+        public async Task<JsonResult<List<string>>> AddSubCategory(string type, string category, [FromBody] KeyValuePair<string, string> subCategory)
         {
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            List<string> result = new List<string>();
 
-            await Server.AddTransactionCategoryAsync(category, subCategory);
+            if (!string.IsNullOrEmpty(type) && !string.IsNullOrEmpty(category) && !string.IsNullOrEmpty(subCategory.Value))
+                await Server.AddTransactionCategoryAsync(type, category, subCategory.Value);
 
-            foreach (var i in await Server.GetTransactionCategoriesAsync())
-                result.Add(i.Key, new List<string>(i.Value));
+            result.AddRange(await Server.GetTransactionCategoriesAsync(type, category));
 
             return Json(result);
         }
 
-        // DELETE: api/settings/sub-category/5/1
+        // DELETE: api/settings/types/expense/category/tax/sales
         [HttpDelete]
-        [Route("api/settings/sub-category/{category}/{subCategory}")]
-        public async Task<JsonResult<Dictionary<string, List<string>>>> RemoveCategory(string category, string subCategory)
+        [Route("api/settings/types/{type}/category/{category}/{subCategory}")]
+        public async Task<JsonResult<List<string>>> RemoveCategory(string type, string category, string subCategory)
         {
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            List<string> result = new List<string>();
 
-            await Server.RemoveTransactionCategoryAsync(category, subCategory);
+            if (!string.IsNullOrEmpty(type) && !string.IsNullOrEmpty(category) && !string.IsNullOrEmpty(subCategory))
+                await Server.RemoveTransactionCategoryAsync(type, category, subCategory);
 
-            foreach (var i in await Server.GetTransactionCategoriesAsync())
-                result.Add(i.Key, new List<string>(i.Value));
+            result.AddRange(await Server.GetTransactionCategoriesAsync(type, category));
 
             return Json(result);
         }

@@ -959,17 +959,15 @@ namespace Naanayam.Data
 
                 Entity.Counter o = Policy.Handle<NullReferenceException>().Retry().Execute<Entity.Counter>(() =>
                 {
-                    Entity.Counter counter = null;
+                    db.GetCollection<Entity.Counter>(Collection.COUNTER).UpdateOne(filter, update, new UpdateOptions() { IsUpsert = true });
 
-                    counter = db.GetCollection<Entity.Counter>(Collection.COUNTER).FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<Entity.Counter>() { IsUpsert = true });
+                    Entity.Counter counter = db.GetCollection<Entity.Counter>(Collection.COUNTER).FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<Entity.Counter>() { IsUpsert = true });
 
                     if (counter == null)
                         throw new NullReferenceException();
 
                     return counter;
                 });
-
-                //Entity.Counter o = _db.GetCollection<Entity.Counter>(Collection.Counter).FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<Entity.Counter>() { IsUpsert = true }).GetAwaiter().GetResult();
 
                 result = o.Value;
             }

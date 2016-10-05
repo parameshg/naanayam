@@ -27,14 +27,20 @@
         Error("Transaction types cannot be loaded.");
     });
 
-    $$transaction.getCategories(function (response) {
-        $scope.categories = response.data;
-    }, function (response) {
-        Error("Transaction categories cannot be loaded.");
-    });
+    $scope.loadCategory = function () {
+        $$transaction.getCategories($scope.type, function (response) {
+            $scope.categories = response.data;
+        }, function (response) {
+            Error("Transaction categories cannot be loaded.");
+        });
+    };
 
     $scope.loadSubCategory = function () {
-        $scope.subCategories = $scope.categories[$scope.category];
+        $$transaction.getSubCategories($scope.type, $scope.category, function (response) {
+            $scope.subCategories = response.data;
+        }, function (response) {
+            Error("Transaction sub-categories cannot be loaded.");
+        });
     };
 
     $$transaction.get($rootScope.account.ID, $scope.year, $scope.month, function (response) {

@@ -227,88 +227,7 @@ namespace Naanayam.Server
 
         #region Category
 
-        public Dictionary<string, List<string>> GetTransactionCategories()
-        {
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
-
-            try
-            {
-                if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
-
-                string json = GetUserSettings(Enum.TransactionCategory);
-
-                foreach(var i in Serializer<Dictionary<string, List<string>>>.Current.DeserializeFromJson(json))
-                    result.Add(i.Key, new List<string>(i.Value));
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-
-            return result;
-        }
-
-        public bool AddTransactionCategory(string category)
-        {
-            bool result = false;
-
-            try
-            {
-                if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
-
-                Dictionary<string, List<string>> o = new Dictionary<string, List<string>>();
-
-                foreach (var i in GetTransactionCategories())
-                    o.Add(i.Key, new List<string>(i.Value));
-
-                o.Add(category, new List<string>());
-
-                string json = Serializer<Dictionary<string, List<string>>>.Current.SerializeToJson(o);
-
-                if (IsUserSettingsExists(Enum.TransactionCategory))
-                    UpdateUserSettings(Enum.TransactionCategory, json);
-                else
-                    CreateUserSettings(Enum.TransactionCategory, json);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-
-            return result;
-        }
-
-        public bool RemoveTransactionCategory(string category)
-        {
-            bool result = false;
-
-            try
-            {
-                if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
-
-                Dictionary<string, List<string>> o = new Dictionary<string, List<string>>();
-
-                foreach (var i in GetTransactionCategories())
-                    o.Add(i.Key, new List<string>(i.Value));
-
-                o.Remove(category);
-
-                string json = Serializer<Dictionary<string, List<string>>>.Current.SerializeToJson(o);
-
-                UpdateUserSettings(Enum.TransactionCategory, json);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-
-            return result;
-        }
-
-        public List<string> GetTransactionCategories(string category)
+        public List<string> GetTransactionCategories(string transactionType)
         {
             List<string> result = new List<string>();
 
@@ -317,14 +236,9 @@ namespace Naanayam.Server
                 if (!IsUserExists())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                foreach(var i in GetTransactionCategories())
-                {
-                    if (i.Key.Equals(category))
-                    {
-                        result.AddRange(i.Value);
-                        break;
-                    }
-                }
+                string json = GetUserSettings(GetCategoryKey(transactionType));
+
+                result.AddRange(Serializer<List<string>>.Current.DeserializeFromJson(json));
             }
             catch (Exception e)
             {
@@ -334,7 +248,7 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool AddTransactionCategory(string category, string subCategory)
+        public bool AddTransactionCategory(string transactionType, string transactionCategory)
         {
             bool result = false;
 
@@ -343,26 +257,18 @@ namespace Naanayam.Server
                 if (!IsUserExists())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                Dictionary<string, List<string>> o = new Dictionary<string, List<string>>();
+                List<string> o = new List<string>();
 
-                foreach (var i in GetTransactionCategories())
-                    o.Add(i.Key, new List<string>(i.Value));
+                o.AddRange(GetTransactionCategories(transactionType));
 
-                foreach(var i in o)
-                {
-                    if (i.Key.Equals(category))
-                    {
-                        i.Value.Add(subCategory);
-                        break;
-                    }
-                }
+                o.Add(transactionCategory);
 
-                string json = Serializer<Dictionary<string, List<string>>>.Current.SerializeToJson(o);
+                string json = Serializer<List<string>>.Current.SerializeToJson(o);
 
-                if (IsUserSettingsExists(Enum.TransactionCategory))
-                    UpdateUserSettings(Enum.TransactionCategory, json);
+                if (IsUserSettingsExists(GetCategoryKey(transactionType)))
+                    UpdateUserSettings(GetCategoryKey(transactionType), json);
                 else
-                    CreateUserSettings(Enum.TransactionCategory, json);
+                    CreateUserSettings(GetCategoryKey(transactionType), json);
             }
             catch (Exception e)
             {
@@ -372,7 +278,7 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool RemoveTransactionCategory(string category, string subCategory)
+        public bool RemoveTransactionCategory(string transactionType, string transactionCategory)
         {
             bool result = false;
 
@@ -381,26 +287,98 @@ namespace Naanayam.Server
                 if (!IsUserExists())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                Dictionary<string, List<string>> o = new Dictionary<string, List<string>>();
+                // remove category
 
-                foreach (var i in GetTransactionCategories())
-                    o.Add(i.Key, new List<string>(i.Value));
+                List<string> o = new List<string>();
 
-                foreach (var i in o)
-                {
-                    if (i.Key.Equals(category))
-                    {
-                        i.Value.Remove(subCategory);
-                        break;
-                    }
-                }
+                o.AddRange(GetTransactionCategories(transactionType));
 
-                string json = Serializer<Dictionary<string, List<string>>>.Current.SerializeToJson(o);
+                o.Remove(transactionCategory);
 
-                if (IsUserSettingsExists(Enum.TransactionCategory))
-                    UpdateUserSettings(Enum.TransactionCategory, json);
+                string json = Serializer<List<string>>.Current.SerializeToJson(o);
+
+                UpdateUserSettings(GetCategoryKey(transactionType), json);
+
+                // remove its corresponding sub categories
+
+                DeleteUserSettings(GetCategoryKey(transactionType, transactionCategory));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
+            return result;
+        }
+
+        public List<string> GetTransactionCategories(string transactionType, string transactionCategory)
+        {
+            List<string> result = new List<string>();
+
+            try
+            {
+                if (!IsUserExists())
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+
+                result.AddRange(GetTransactionCategories(transactionType, transactionCategory));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
+            return result;
+        }
+
+        public bool AddTransactionCategory(string transactionType, string transactionCategory, string transactionSubCategory)
+        {
+            bool result = false;
+
+            try
+            {
+                if (!IsUserExists())
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+
+                List<string> o = new List<string>();
+
+                o.AddRange(GetTransactionCategories(transactionType, transactionCategory));
+
+                string json = Serializer<List<string>>.Current.SerializeToJson(o);
+
+                if (IsUserSettingsExists(GetCategoryKey(transactionType, transactionCategory)))
+                    UpdateUserSettings(GetCategoryKey(transactionType, transactionCategory), json);
                 else
-                    CreateUserSettings(Enum.TransactionCategory, json);
+                    CreateUserSettings(GetCategoryKey(transactionType, transactionCategory), json);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
+            return result;
+        }
+
+        public bool RemoveTransactionCategory(string transactionType, string transactionCategory, string transactionSubCategory)
+        {
+            bool result = false;
+
+            try
+            {
+                if (!IsUserExists())
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+
+                List<string> o = new List<string>();
+
+                o.AddRange(GetTransactionCategories(transactionType, transactionCategory));
+
+                o.Remove(transactionSubCategory);
+
+                string json = Serializer<List<string>>.Current.SerializeToJson(o);
+
+                if (IsUserSettingsExists(GetCategoryKey(transactionType, transactionCategory)))
+                    UpdateUserSettings(GetCategoryKey(transactionType, transactionCategory), json);
+                else
+                    CreateUserSettings(GetCategoryKey(transactionType, transactionCategory), json);
             }
             catch (Exception e)
             {
@@ -423,7 +401,7 @@ namespace Naanayam.Server
                 if (!IsUserExists())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                result.AddRange(Database.GetEnumValues(Enum.TransactionType));
+                result.AddRange(Database.GetEnumValues(Enum.Type));
             }
             catch (Exception e)
             {
@@ -442,7 +420,7 @@ namespace Naanayam.Server
                 if (!IsUserExists())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                result = Database.AddEnumValue(Enum.TransactionType, transactionType);
+                result = Database.AddEnumValue(Enum.Type, transactionType);
             }
             catch (Exception e)
             {
@@ -461,7 +439,7 @@ namespace Naanayam.Server
                 if (!IsUserExists())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                result = Database.RemoveEnumValue(Enum.TransactionType, transactionType);
+                result = Database.RemoveEnumValue(Enum.Type, transactionType);
             }
             catch (Exception e)
             {
@@ -578,17 +556,27 @@ namespace Naanayam.Server
 
             if (result)
             {
-                Dictionary<string, List<string>> category = new Dictionary<string, List<string>>();
+                foreach (string type in Database.GetEnumValues(Enum.Type))
+                {
+                    List<string> categories = new List<string>();
 
-                category.Add("Travel", new List<string>(new string[] { "Car", "Bus", "Train" }));
+                    categories.AddRange(Database.GetEnumValues(GetCategoryKey(type)));
 
-                category.Add("Utility", new List<string>(new string[] { "Mobile", "Internet", "Electricity" }));
+                    string json = Serializer<List<string>>.Current.SerializeToJson(categories);
 
-                category.Add("Tax", new List<string>(new string[] { "Income Tax", "Sales Tax" }));
+                    Database.CreateUserSettingsAsync(username, GetCategoryKey(type), json);
 
-                string json = Serializer<Dictionary<string, List<string>>>.Current.SerializeToJson(category);
+                    foreach (string category in categories)
+                    {
+                        List<string> subCategories = new List<string>();
 
-                Database.CreateUserSettings(username, Enum.TransactionCategory, json);
+                        subCategories.AddRange(Database.GetEnumValues(GetCategoryKey(type, category)));
+
+                        json = Serializer<List<string>>.Current.SerializeToJson(subCategories);
+
+                        Database.CreateUserSettings(username, GetCategoryKey(type, category), json);
+                    }
+                }
             }
 
             return result;
@@ -908,7 +896,7 @@ namespace Naanayam.Server
                 if (!IsUserExists())
                     throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
-                Dictionary<string, List<string>> categories = GetTransactionCategories();
+                List<string> categories = GetTransactionCategories(TransactionType.Expense.ToString());
 
                 List<Transaction> transactions = GetTransactions(accountId, transactionDateFrom, transactionDateTo);
 
@@ -1099,6 +1087,36 @@ namespace Naanayam.Server
 
                 Database.CreateSettings("mail.password", "password");
 
+                // Create Enum Values
+
+                foreach (string i in GetEnumValues(typeof(Role)))
+                    Database.AddEnumValue(Enum.Role, i);
+
+                foreach (string i in GetEnumValues(typeof(Currency)))
+                    Database.AddEnumValue(Enum.Currency, i);
+
+                Database.AddEnumValue(Enum.Type, "Income");
+                Database.AddEnumValue(Enum.Type, "Expense");
+                Database.AddEnumValue(Enum.Type, "Transfer");
+
+                Database.AddEnumValue(GetCategoryKey("Income"), "Salary");
+
+                Database.AddEnumValue(GetCategoryKey("Expense"), "Travel");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Travel"), "Bus");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Travel"), "Train");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Travel"), "Car");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Travel"), "Air");
+
+                Database.AddEnumValue(GetCategoryKey("Expense"), "Utility");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Utility"), "Power");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Utility"), "Gas");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Utility"), "Water");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Utility"), "Internet");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Utility"), "Mobile");
+
+                Database.AddEnumValue(GetCategoryKey("Expense"), "Tax");
+                Database.AddEnumValue(GetCategoryKey("Expense", "Tax"), "IncomeTax");
+
                 #region Create Users
 
                 // Create Anonymous Internal User and Assign Role
@@ -1120,41 +1138,43 @@ namespace Naanayam.Server
 
                     Database.EnableUser(defaultAdminUsername, true);
 
-                    Dictionary<string, List<string>> category = new Dictionary<string, List<string>>();
+                    foreach (string type in Database.GetEnumValues(Enum.Type))
+                    {
+                        List<string> categories = new List<string>();
 
-                    category.Add("Travel", new List<string>(new string[] { "Car", "Bus", "Train" }));
+                        categories.AddRange(Database.GetEnumValues(GetCategoryKey(type)));
 
-                    category.Add("Utility", new List<string>(new string[] { "Mobile", "Internet", "Electricity" }));
+                        string json = Serializer<List<string>>.Current.SerializeToJson(categories);
 
-                    category.Add("Tax", new List<string>(new string[] { "Income Tax", "Sales Tax" }));
+                        Database.CreateUserSettingsAsync(defaultAdminUsername, GetCategoryKey(type), json);
 
-                    string json = Serializer<Dictionary<string, List<string>>>.Current.SerializeToJson(category);
+                        foreach (string category in categories)
+                        {
+                            List<string> subCategories = new List<string>();
 
-                    Database.CreateUserSettings(Constants.User.ADMINISTRATOR, Enum.TransactionCategory, json);
+                            subCategories.AddRange(Database.GetEnumValues(GetCategoryKey(type, category)));
+
+                            json = Serializer<List<string>>.Current.SerializeToJson(subCategories);
+
+                            Database.CreateUserSettings(defaultAdminUsername, GetCategoryKey(type, category), json);
+                        }
+                    }
 
                     Database.AddUserToRole(defaultAdminUsername, defaultAdminRole.ToString());
 
-                    Database.CreateAccount(GetNextId(ID.ACCOUNT), defaultAdminUsername, "Bank", "Default Account", "USD");
+                    Database.CreateAccount(Database.GetNextId(ID.ACCOUNT), defaultAdminUsername, "Bank", "Default Account", "USD");
                 }
 
                 #endregion
 
-                // Create Enum Values
-
-                foreach (string i in GetEnumValues(typeof(Role)))
-                    Database.AddEnumValue(Enum.Role, i);
-
-                foreach (string i in GetEnumValues(typeof(Currency)))
-                    Database.AddEnumValue(Enum.Currency, i);
-
-                Database.AddEnumValue(Enum.TransactionType, "Income");
-                Database.AddEnumValue(Enum.TransactionType, "Expense");
-                Database.AddEnumValue(Enum.TransactionType, "Transfer");
-
                 #endregion
+
+                result = true;
             }
             catch (Exception e)
             {
+                result = false;
+
                 Log.Error(e);
             }
 
@@ -1193,9 +1213,6 @@ namespace Naanayam.Server
         {
             string result = string.Empty;
 
-            if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
-
             if (PasswordHashIterations > 0)
             {
                 result = Hasher.Default.Execute(password, HashType);
@@ -1217,9 +1234,6 @@ namespace Naanayam.Server
         public string Hash(byte[] data)
         {
             string result = string.Empty;
-
-            if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
 
             result = Hasher.Default.Execute(data, HashType);
 
@@ -1248,9 +1262,6 @@ namespace Naanayam.Server
         {
             List<string> result = new List<string>();
 
-            if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
-
             foreach (var i in o.GetEnumValues())
                 result.Add(i.ToString());
 
@@ -1271,6 +1282,16 @@ namespace Naanayam.Server
             }
 
             return result.ToString();
+        }
+
+        private string GetCategoryKey(string transactionType)
+        {
+            return string.Format("{0}", transactionType);
+        }
+
+        private string GetCategoryKey(string transactionType, string transactionCategory)
+        {
+            return string.Format("{0}.{1}", transactionType, transactionCategory);
         }
 
         #endregion

@@ -27,7 +27,7 @@
                             <th colspan="1">Types</th>
                         </tr>
                         <tr data-ng-repeat="i in types">
-                            <td>{{i}}</td>
+                            <td data-ng-click="getCategories(i)">{{i}}</td>
                             <!--<td style="width: 25px">
                                 <button class="btn btn-xs btn-danger" type="button" data-ng-click="delete(i.ID)"><span class="glyphicon glyphicon-remove"></span></button>
                             </td>-->
@@ -37,12 +37,14 @@
                 <td style="width: 25%; vertical-align: top; padding-right: 10px;">
                     <table class="table table-bordered table-hover">
                         <tr>
-                            <th colspan="2">Category</th>
+                            <th colspan="2">
+                                Category [{{selectedType}}]
+                            </th>
                         </tr>
                         <tr data-ng-repeat="(key, data) in categories">
-                            <td data-ng-click="getCategories(key)">{{key}}</td>
+                            <td data-ng-click="getSubCategories(data)">{{data}}</td>
                             <td style="width: 25px">
-                                <button class="btn btn-xs btn-danger" type="button" data-ng-click="removeCategory(key)"><span class="glyphicon glyphicon-remove"></span></button>
+                                <button class="btn btn-xs btn-danger" type="button" data-ng-click="removeCategory(data)"><span class="glyphicon glyphicon-remove"></span></button>
                             </td>
                         </tr>
                         <tr>
@@ -60,16 +62,16 @@
                                 Sub Category [{{selectedCategory}}]
                             </th>
                         </tr>
-                        <tr data-ng-repeat="i in categories[selectedCategory]">
-                            <td>{{i}}</td>
+                        <tr data-ng-repeat="(key, data) in subCategories">
+                            <td>{{data}}</td>
                             <td style="width: 25px">
-                                <button class="btn btn-xs btn-danger" type="button" data-ng-click="removeSubCategory(selectedCategory, i)"><span class="glyphicon glyphicon-remove"></span></button>
+                                <button class="btn btn-xs btn-danger" type="button" data-ng-click="removeSubCategory(data)"><span class="glyphicon glyphicon-remove"></span></button>
                             </td>
                         </tr>
                         <tr>
                             <td><input type="text" class="form-control" data-ng-model="subCategory" /></td>
                             <td style="width: 25px">
-                                <button class="btn btn-xs btn-primary" type="button" data-ng-click="addSubCategory(selectedCategory, subCategory)"><span class="glyphicon glyphicon-plus"></span></button>
+                                <button class="btn btn-xs btn-primary" type="button" data-ng-click="addSubCategory(subCategory)"><span class="glyphicon glyphicon-plus"></span></button>
                             </td>
                         </tr>
                     </table>
