@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Naanayam</id>
+        <version>1.0</version>
+        <title>Naanayam Money Manager</title>
+        <authors>Paramesh Gunasekaran</authors>
+        <owners>Paramesh Gunasekaran</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Naanayam - Personal and Family Money Manager</description>
+        <copyright>Copyright © Paramesh Gunasekaran 2015 - 2016</copyright>
+        <iconUrl>http://naanayam.paramg.com/favicon.ico</iconUrl>
+    </metadata>
+    <files>
+        <file src="Naanayam.Web\Angular\Controllers\Account.js" target="content\Angular\Controllers\Account.js" />
+        <file src="Naanayam.Web\Angular\Controllers\Home.js" target="content\Angular\Controllers\Home.js" />
+        <file src="Naanayam.Web\Angular\Controllers\Layout.js" target="content\Angular\Controllers\Layout.js" />
+        <file src="Naanayam.Web\Angular\Controllers\Menu.js" target="content\Angular\Controllers\Menu.js" />
+        <file src="Naanayam.Web\Angular\Controllers\Report.js" target="content\Angular\Controllers\Report.js" />
+        <file src="Naanayam.Web\Angular\Controllers\Settings.js" target="content\Angular\Controllers\Settings.js" />
+        <file src="Naanayam.Web\Angular\Controllers\Transaction.js" target="content\Angular\Controllers\Transaction.js" />
+        <file src="Naanayam.Web\Angular\Directives\Display.js" target="content\Angular\Directives\Display.js" />
+        <file src="Naanayam.Web\Angular\Filters\TransactionType.js" target="content\Angular\Filters\TransactionType.js" />
+        <file src="Naanayam.Web\Angular\Services\Account.js" target="content\Angular\Services\Account.js" />
+        <file src="Naanayam.Web\Angular\Services\Currency.js" target="content\Angular\Services\Currency.js" />
+        <file src="Naanayam.Web\Angular\Services\Report.js" target="content\Angular\Services\Report.js" />
+        <file src="Naanayam.Web\Angular\Services\Settings.js" target="content\Angular\Services\Settings.js" />
+        <file src="Naanayam.Web\Angular\Services\Transaction.js" target="content\Angular\Services\Transaction.js" />
+        <file src="Naanayam.Web\Angular\Views\Reports\Monthly-Expenses-Category-Pie.html" target="content\Angular\Views\Reports\Monthly-Expenses-Category-Pie.html" />
+        <file src="Naanayam.Web\Angular\Views\Accounts.html" target="content\Angular\Views\Accounts.html" />
+        <file src="Naanayam.Web\Angular\Views\Home.html" target="content\Angular\Views\Home.html" />
+        <file src="Naanayam.Web\Angular\Views\Settings.html" target="content\Angular\Views\Settings.html" />
+        <file src="Naanayam.Web\Angular\Views\Transactions.html" target="content\Angular\Views\Transactions.html" />
+        <file src="Naanayam.Web\Angular\App.js" target="content\Angular\App.js" />
+        <file src="Naanayam.Web\Content\Site.css" target="content\Content\Site.css" />
+        <file src="Naanayam.Web\Images\1.jpg" target="content\Images\1.jpg" />
+        <file src="Naanayam.Web\Images\2.jpg" target="content\Images\2.jpg" />
+        <file src="Naanayam.Web\Images\3.jpg" target="content\Images\3.jpg" />
+        <file src="Naanayam.Web\Images\error.png" target="content\Images\error.png" />
+        <file src="Naanayam.Web\Views\Home\Index.cshtml" target="content\Views\Home\Index.cshtml" />
+        <file src="Naanayam.Web\Views\Shared\Error.cshtml" target="content\Views\Shared\Error.cshtml" />
+        <file src="Naanayam.Web\Views\Shared\_Layout.cshtml" target="content\Views\Shared\_Layout.cshtml" />
+        <file src="Naanayam.Web\Views\Web.config" target="content\Views\Web.config" />
+        <file src="Naanayam.Web\Views\_ViewStart.cshtml" target="content\Views\_ViewStart.cshtml" />
+        <file src="Naanayam.Web\favicon.ico" target="content\favicon.ico" />
+        <file src="Naanayam.Web\Global.asax" target="content\Global.asax" />
+        <file src="Naanayam.Web\LICENSE.TXT" target="content\LICENSE.TXT" />
+        <file src="Naanayam.Web\NLog.config" target="content\NLog.config" />
+        <file src="Naanayam.Web\Web.config" target="content\Web.config" />
+        <file src="Naanayam.Web\bin\Antlr3.Runtime.dll" target="lib\net45\Antlr3.Runtime.dll" />
+        <file src="Naanayam.Web\bin\AutoMapper.dll" target="lib\net45\AutoMapper.dll" />
+        <file src="Naanayam.Web\bin\EntityFramework.dll" target="lib\net45\EntityFramework.dll" />
+        <file src="Naanayam.Web\bin\EntityFramework.SqlServer.dll" target="lib\net45\EntityFramework.SqlServer.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.AspNet.Identity.Core.dll" target="lib\net45\Microsoft.AspNet.Identity.Core.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.AspNet.Identity.EntityFramework.dll" target="lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.AspNet.Identity.Owin.dll" target="lib\net45\Microsoft.AspNet.Identity.Owin.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Owin.dll" target="lib\net45\Microsoft.Owin.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Owin.Host.SystemWeb.dll" target="lib\net45\Microsoft.Owin.Host.SystemWeb.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Owin.Security.Cookies.dll" target="lib\net45\Microsoft.Owin.Security.Cookies.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Owin.Security.dll" target="lib\net45\Microsoft.Owin.Security.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Owin.Security.Facebook.dll" target="lib\net45\Microsoft.Owin.Security.Facebook.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Owin.Security.Google.dll" target="lib\net45\Microsoft.Owin.Security.Google.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Owin.Security.MicrosoftAccount.dll" target="lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Owin.Security.OAuth.dll" target="lib\net45\Microsoft.Owin.Security.OAuth.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Owin.Security.Twitter.dll" target="lib\net45\Microsoft.Owin.Security.Twitter.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Practices.ServiceLocation.dll" target="lib\net45\Microsoft.Practices.ServiceLocation.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Practices.Unity.Configuration.dll" target="lib\net45\Microsoft.Practices.Unity.Configuration.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Practices.Unity.dll" target="lib\net45\Microsoft.Practices.Unity.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Practices.Unity.Mvc.dll" target="lib\net45\Microsoft.Practices.Unity.Mvc.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Practices.Unity.RegistrationByConvention.dll" target="lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll" />
+        <file src="Naanayam.Web\bin\Microsoft.Web.Infrastructure.dll" target="lib\net45\Microsoft.Web.Infrastructure.dll" />
+        <file src="Naanayam.Web\bin\MongoDB.Bson.dll" target="lib\net45\MongoDB.Bson.dll" />
+        <file src="Naanayam.Web\bin\MongoDB.Driver.Core.dll" target="lib\net45\MongoDB.Driver.Core.dll" />
+        <file src="Naanayam.Web\bin\MongoDB.Driver.dll" target="lib\net45\MongoDB.Driver.dll" />
+        <file src="Naanayam.Web\bin\Naanayam.dll" target="lib\net45\Naanayam.dll" />
+        <file src="Naanayam.Web\bin\Naanayam.Web.dll" target="lib\net45\Naanayam.Web.dll" />
+        <file src="Naanayam.Web\bin\Naanayam.Server.dll" target="lib\net45\Naanayam.Server.dll" />
+        <file src="Naanayam.Web\bin\Naanayam.Data.dll" target="lib\net45\Naanayam.Data.dll" />
+        <file src="Naanayam.Web\bin\Newtonsoft.Json.dll" target="lib\net45\Newtonsoft.Json.dll" />
+        <file src="Naanayam.Web\bin\NLog.dll" target="lib\net45\NLog.dll" />
+        <file src="Naanayam.Web\bin\Owin.dll" target="lib\net45\Owin.dll" />
+        <file src="Naanayam.Web\bin\Polly.dll" target="lib\net45\Polly.dll" />
+        <file src="Naanayam.Web\bin\System.Net.Http.Formatting.dll" target="lib\net45\System.Net.Http.Formatting.dll" />
+        <file src="Naanayam.Web\bin\System.Web.Helpers.dll" target="lib\net45\System.Web.Helpers.dll" />
+        <file src="Naanayam.Web\bin\System.Web.Http.dll" target="lib\net45\System.Web.Http.dll" />
+        <file src="Naanayam.Web\bin\System.Web.Http.WebHost.dll" target="lib\net45\System.Web.Http.WebHost.dll" />
+        <file src="Naanayam.Web\bin\System.Web.Mvc.dll" target="lib\net45\System.Web.Mvc.dll" />
+        <file src="Naanayam.Web\bin\System.Web.Optimization.dll" target="lib\net45\System.Web.Optimization.dll" />
+        <file src="Naanayam.Web\bin\System.Web.Razor.dll" target="lib\net45\System.Web.Razor.dll" />
+        <file src="Naanayam.Web\bin\System.Web.WebPages.Deployment.dll" target="lib\net45\System.Web.WebPages.Deployment.dll" />
+        <file src="Naanayam.Web\bin\System.Web.WebPages.dll" target="lib\net45\System.Web.WebPages.dll" />
+        <file src="Naanayam.Web\bin\System.Web.WebPages.Razor.dll" target="lib\net45\System.Web.WebPages.Razor.dll" />
+        <file src="Naanayam.Web\bin\WebActivatorEx.dll" target="lib\net45\WebActivatorEx.dll" />
+        <file src="Naanayam.Web\bin\WebGrease.dll" target="lib\net45\WebGrease.dll" />
+    </files>
+</package>

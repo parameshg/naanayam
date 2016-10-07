@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Naanayam", "Naanayam\Naanayam.csproj", "{A88CE312-B77F-489C-9E8B-58BA07AD030A}"
 EndProject
@@ -12,6 +12,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Naanayam.Web", "Naanayam.Web\Naanayam.Web.csproj", "{1DF89F86-B781-4DF8-BB5D-3491386FB967}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Naanayam.Test", "Naanayam.Test\Naanayam.Test.csproj", "{98474FBE-F98A-48D4-A30F-8F7BDA8F0357}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{353BC245-30C7-4CED-96F0-5C12811B52E2}"
+	ProjectSection(SolutionItems) = preProject
+		Naanayam.nuspec = Naanayam.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
