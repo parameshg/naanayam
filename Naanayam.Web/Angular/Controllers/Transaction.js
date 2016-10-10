@@ -58,7 +58,7 @@
     }
 
     $scope.save = function () {
-        var date = new Date($("#id-date").val()).toLocaleDateString();
+        var date = new Date($("#id-date").val()).toUTCString();
         if ($scope.id == "") {
             $$transaction.create($rootScope.account.ID, date, $scope.description, $scope.type, $scope.category + "." + $scope.subCategory, $scope.amount, function (response) {
                 $scope.load();
