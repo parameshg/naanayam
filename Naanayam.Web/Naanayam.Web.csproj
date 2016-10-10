@@ -253,9 +253,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Images\1.jpg" />
-    <Content Include="Images\2.jpg" />
-    <Content Include="Images\3.jpg" />
+    <Content Include="Images\home.jpg" />
     <Content Include="Images\error.png" />
     <Content Include="LICENSE.TXT" />
     <Content Include="Web.config" />
