@@ -35,7 +35,7 @@ namespace Naanayam.Web.App_Start
  
             container.RegisterType<IDatabase, Database>(new InjectionConstructor(Properties.Settings.Default.Database));
 
-            container.RegisterType<IServer, Agent>(new InjectionConstructor(container.Resolve<IDatabase>(), new Context("administrator")));
+            container.RegisterType<IServer, Agent>(new InjectionConstructor(container.Resolve<IDatabase>(), new Context("anonymous")));
         }
     }
 }

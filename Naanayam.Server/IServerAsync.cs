@@ -59,7 +59,49 @@ namespace Naanayam.Server
 
         #region Users
 
+        Task<bool> AuthenticateAsync(string username, string password);
+
+        Task<long> GetUserCountAsync();
+
+        Task<List<User>> GetUsersAsync(int skip = 0, int count = 1);
+
+        Task<bool> IsUserInRoleAsync(Role role, string username = "");
+
+        Task<bool> IsUserInRoleAsync(string role, string username = "");
+
+        Task<bool> IsUserExistsAsync(string username = "");
+
+        Task<bool> IsUserAdminAsync(string username = "");
+
+        Task<User> GetUserByUsernameAsync(string username);
+
+        Task<bool> CreateUserAsync(string username, string password, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
+
+        Task<bool> UpdateUserAsync(string username, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
+
+        Task<bool> AddUserToRoleAsync(string username, string role);
+
+        Task<bool> RemoveUserFromRoleAsync(string username, string role);
+
+        Task<List<KeyValuePair<string, string>>> GetAllUserSettingsAsync(string username);
+
+        Task<string> GetUserSettingsAsync(string username, string key);
+
         Task<bool> IsUserSettingsExistsAsync(string key, string username = null);
+
+        Task<bool> CreateUserSettingsAsync(string username, string key, string value);
+
+        Task<bool> UpdateUserSettingsAsync(string username, string key, string value);
+
+        Task<bool> DeleteUserSettingsAsync(string username, string key);
+
+        Task<bool> ResetUserPaswordAsync(string username, string password);
+
+        Task<bool> EnableUserAsync(string username);
+
+        Task<bool> DisableUserAsync(string username);
+
+        Task<bool> DeleteUserAsync(string username);
 
         #endregion
 

@@ -8,15 +8,16 @@ namespace Naanayam.Web.Controllers
     {
         protected ILogger Log { get; private set; }
 
-        protected string Username { get { return User.Identity.Name; } }
-
-        protected IServer Server { get; set; }
+        protected IServer Service { get; set; }
 
         public Base()
         {
             Log = DependencyResolver.Current.GetService<ILogger>();
 
-            Server = DependencyResolver.Current.GetService<IServer>();
+            Service = DependencyResolver.Current.GetService<IServer>();
+
+            if (HttpContext != null && HttpContext.User.Identity.IsAuthenticated)
+                Service.Context.Impersonate(HttpContext.User.Identity.Name);
         }
     }
 }
