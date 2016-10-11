@@ -66,6 +66,8 @@ namespace Naanayam.Server
 
         #region User
 
+        bool Authenticate(string username, string password);
+
         long GetUserCount();
 
         List<User> GetUsers(int skip = 0, int count = 1);
