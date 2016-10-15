@@ -21,9 +21,9 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-                username = string.IsNullOrEmpty(username) ? Context.User : username;
+                username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
                 result.AddRange(await Database.GetAccountsAsync(username));
             }
@@ -42,11 +42,11 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 uint id = await GetNextIdAsync(ID.ACCOUNT);
 
-                result = await Database.CreateAccountAsync(id, Context.User, name, description, currency);
+                result = await Database.CreateAccountAsync(id, Context.Username, name, description, currency);
             }
             catch (Exception e)
             {
@@ -63,7 +63,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = await Database.UpdateAccountAsync(id, name, description, currency);
             }
@@ -82,7 +82,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = await Database.DeleteAccountAsync(id);
             }
@@ -98,16 +98,16 @@ namespace Naanayam.Server
 
         #region Transaction
 
-        public async Task<List<Transaction>> GetTransactionsAsync(uint accountId, DateTime? transactionDateFrom = null, DateTime? transactionDateTo = null)
+        public async Task<List<Transaction>> GetTransactionsAsync(DateTime? transactionDateFrom = null, DateTime? transactionDateTo = null)
         {
             List<Transaction> result = new List<Transaction>();
 
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-                result.AddRange(await Database.GetTransactionsAsync(accountId, transactionDateFrom, transactionDateTo));
+                result.AddRange(await Database.GetTransactionsAsync(Context.Account, Context.Username, transactionDateFrom, transactionDateTo));
             }
             catch (Exception e)
             {
@@ -117,18 +117,18 @@ namespace Naanayam.Server
             return result;
         }
 
-        public async Task<bool> CreateTransactionAsync(uint account, DateTime timestamp, TransactionType type, string category, string description, double amount)
+        public async Task<bool> CreateTransactionAsync(DateTime timestamp, TransactionType type, string category, string description, double amount)
         {
             bool result = false;
 
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 uint id = await GetNextIdAsync(ID.TRANSACTION);
 
-                result = await Database.CreateTransactionAsync(id, Context.User, account, timestamp, (int)type, category, description, amount);
+                result = await Database.CreateTransactionAsync(id, Context.Username, Context.Account, timestamp, (int)type, category, description, amount);
             }
             catch(Exception e)
             {
@@ -145,7 +145,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = await Database.UpdateTransactionAsync(id, timestamp, (int)type, category, description, amount);
             }
@@ -164,7 +164,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = await Database.DeleteTransactionAsync(id);
             }
@@ -185,7 +185,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 string json = await GetUserSettingsAsync(GetCategoryKey(transactionType));
 
@@ -206,7 +206,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 List<string> o = new List<string>();
 
@@ -236,7 +236,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 // remove category
 
@@ -269,7 +269,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 string json = await GetUserSettingsAsync(GetCategoryKey(transactionType + "." + transactionCategory));
 
@@ -290,7 +290,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 List<string> o = new List<string>();
 
@@ -320,7 +320,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 List<string> o = new List<string>();
 
@@ -354,7 +354,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result.AddRange(await Database.GetEnumValuesAsync(Enum.Type));
             }
@@ -373,7 +373,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = await Database.AddEnumValueAsync(Enum.Type, transactionType);
             }
@@ -392,7 +392,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = await Database.RemoveEnumValueAsync(Enum.Type, transactionType);
             }
@@ -415,7 +415,7 @@ namespace Naanayam.Server
             long result = 0;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             result = await Database.GetUserCountAsync();
 
@@ -427,7 +427,7 @@ namespace Naanayam.Server
             List<User> result = null;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             result = await Database.GetUsersAsync((page - 1) * count, count);
 
@@ -438,7 +438,7 @@ namespace Naanayam.Server
         {
             bool result = false;
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -459,9 +459,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -483,9 +483,9 @@ namespace Naanayam.Server
             User result = null;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -501,7 +501,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!await IsUserAdminAsync())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -542,7 +542,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!await IsUserAdminAsync())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -556,7 +556,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!await IsUserAdminAsync())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -570,7 +570,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!await IsUserAdminAsync())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -584,9 +584,9 @@ namespace Naanayam.Server
             List<KeyValuePair<string, string>> result = null;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -600,9 +600,9 @@ namespace Naanayam.Server
             string result = string.Empty;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -616,9 +616,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -632,9 +632,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -648,9 +648,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -664,9 +664,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -689,7 +689,7 @@ namespace Naanayam.Server
                 throw new InvalidParameterException("newPassword");
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -710,12 +710,12 @@ namespace Naanayam.Server
             return result;
         }
 
-        public async Task<bool> ResetUserPaswordAsync(string username, string password)
+        public async Task<bool> ResetUserPaswordAsync(string password, string username = null)
         {
             bool result = false;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             if (string.IsNullOrEmpty(username))
                 throw new InvalidParameterException("username");
@@ -724,9 +724,9 @@ namespace Naanayam.Server
                 throw new InvalidParameterException("password");
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? null : username.ToLower();
+            username = string.IsNullOrEmpty(username) ? Context.Username : username.ToLower();
 
             password = await HashPasswordAsync(password);
 
@@ -748,7 +748,7 @@ namespace Naanayam.Server
                 throw new InvalidParameterException("password");
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             User o = await Database.GetUserByUsernameAsync(username);
 
@@ -778,7 +778,7 @@ namespace Naanayam.Server
                 throw new InvalidParameterException("loginProviderKey");
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             User o = await Database.GetUserByUsernameAsync(username);
 
@@ -788,42 +788,42 @@ namespace Naanayam.Server
             return result;
         }
 
-        public async Task<bool> EnableUserAsync(string username)
+        public async Task<bool> EnableUserAsync(string username = null)
         {
             bool result = false;
 
             if (!await IsUserAdminAsync())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? null : username.ToLower();
+            username = string.IsNullOrEmpty(username) ? Context.Username : username.ToLower();
 
             result = await Database.EnableUserAsync(username, true);
 
             return result;
         }
 
-        public async Task<bool> DisableUserAsync(string username)
+        public async Task<bool> DisableUserAsync(string username = null)
         {
             bool result = false;
 
             if (!await IsUserAdminAsync())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? null : username.ToLower();
+            username = string.IsNullOrEmpty(username) ? Context.Username : username.ToLower();
 
             result = await Database.EnableUserAsync(username, false);
 
             return result;
         }
 
-        public async Task<bool> DeleteUserAsync(string username)
+        public async Task<bool> DeleteUserAsync(string username = null)
         {
             bool result = false;
 
             if (!await IsUserAdminAsync())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? null : username.ToLower();
+            username = string.IsNullOrEmpty(username) ? Context.Username : username.ToLower();
 
             User user = GetUserByUsername(username);
 
@@ -864,18 +864,18 @@ namespace Naanayam.Server
 
         #region Reports
 
-        public async Task<List<Report.CategoryValue>> GetMonthlyExpensesByCategoryReportAsync(uint accountId, DateTime? transactionDateFrom, DateTime? transactionDateTo)
+        public async Task<List<Report.CategoryValue>> GetMonthlyExpensesByCategoryReportAsync(uint accountId, DateTime? from, DateTime? to)
         {
             List<Report.CategoryValue> result = new List<Report.CategoryValue>();
 
             try
             {
                 if (!await IsUserExistsAsync())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 List<string> categories = await GetTransactionCategoriesAsync(TransactionType.Expense.ToString());
 
-                List<Transaction> transactions = await GetTransactionsAsync(accountId, transactionDateFrom,transactionDateTo);
+                List<Transaction> transactions = await GetTransactionsAsync(from, to);
 
                 string category = string.Empty;
 
@@ -929,12 +929,12 @@ namespace Naanayam.Server
 
             try
             {
-                if (await IsUserExistsAsync(Context.User))
+                if (await IsUserExistsAsync(Context.Username))
                 {
 
                 }
                 else
-                    throw new UserNotFoundException(Context.User);
+                    throw new UserNotFoundException(Context.Username);
             }
             catch (Exception e)
             {
@@ -950,12 +950,12 @@ namespace Naanayam.Server
 
             try
             {
-                if (await IsUserExistsAsync(Context.User))
+                if (await IsUserExistsAsync(Context.Username))
                 {
 
                 }
                 else
-                    throw new UserNotFoundException(Context.User);
+                    throw new UserNotFoundException(Context.Username);
             }
             catch (Exception e)
             {
@@ -971,12 +971,12 @@ namespace Naanayam.Server
 
             try
             {
-                if (await IsUserExistsAsync(Context.User))
+                if (await IsUserExistsAsync(Context.Username))
                 {
 
                 }
                 else
-                    throw new UserNotFoundException(Context.User);
+                    throw new UserNotFoundException(Context.Username);
             }
             catch (Exception e)
             {
@@ -992,12 +992,12 @@ namespace Naanayam.Server
 
             try
             {
-                if (await IsUserExistsAsync(Context.User))
+                if (await IsUserExistsAsync(Context.Username))
                 {
 
                 }
                 else
-                    throw new UserNotFoundException(Context.User);
+                    throw new UserNotFoundException(Context.Username);
             }
             catch (Exception e)
             {
@@ -1013,12 +1013,12 @@ namespace Naanayam.Server
 
             try
             {
-                if (await IsUserExistsAsync(Context.User))
+                if (await IsUserExistsAsync(Context.Username))
                 {
 
                 }
                 else
-                    throw new UserNotFoundException(Context.User);
+                    throw new UserNotFoundException(Context.Username);
             }
             catch (Exception e)
             {
@@ -1042,7 +1042,7 @@ namespace Naanayam.Server
             string result = string.Empty;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             if (PasswordHashIterations > 0)
             {
@@ -1067,7 +1067,7 @@ namespace Naanayam.Server
             string result = string.Empty;
 
             if (!await IsUserExistsAsync())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             result = Hasher.Default.Execute(data, HashType);
 
@@ -1148,6 +1148,7 @@ namespace Naanayam.Server
                 await Database.AddEnumValueAsync(Enum.Type, "Transfer");
 
                 await Database.AddEnumValueAsync(GetCategoryKey("Income"), "Salary");
+                await Database.AddEnumValueAsync(GetCategoryKey("Income", "Salary"), "Salary");
 
                 await Database.AddEnumValueAsync(GetCategoryKey("Expense"), "Travel");
                 await Database.AddEnumValueAsync(GetCategoryKey("Expense", "Travel"), "Bus");
@@ -1232,7 +1233,7 @@ namespace Naanayam.Server
             try
             {
                 if (!await IsUserAdminAsync())
-                    throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                    throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
                 result = await Database.PurgeAsync();
             }
@@ -1253,7 +1254,7 @@ namespace Naanayam.Server
             uint result = 0;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             result = await Database.GetNextIdAsync(name);
 
@@ -1265,7 +1266,7 @@ namespace Naanayam.Server
             List<string> result = new List<string>();
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             foreach (var i in o.GetEnumValues())
                 result.Add(i.ToString());

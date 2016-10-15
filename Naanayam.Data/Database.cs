@@ -115,7 +115,7 @@ namespace Naanayam.Data
             return result;
         }
 
-        public bool CreateAccount(uint accountId, string username, string accountName, string accountDescription, string accountCurrency)
+        public bool CreateAccount(uint id, string username, string name, string description, string currency)
         {
             bool result = false;
 
@@ -123,11 +123,11 @@ namespace Naanayam.Data
             {
                 db.GetCollection<Entity.Account>(Collection.ACCOUNT).InsertOne(new Entity.Account()
                 {
-                    ID = accountId,
+                    ID = id,
                     Username = username,
-                    Name = accountName,
-                    Description = accountDescription,
-                    Currency = accountCurrency
+                    Name = name,
+                    Description = description,
+                    Currency = currency
                 });
 
                 result = true;
@@ -140,18 +140,18 @@ namespace Naanayam.Data
             return result;
         }
 
-        public bool UpdateAccount(uint accountId, string accountName, string accountDescription, string accountCurrency)
+        public bool UpdateAccount(uint id, string name, string description, string currency)
         {
             bool result = false;
 
             try
             {
-                var filter = Builders<Entity.Account>.Filter.Eq(i => i.ID, accountId);
+                var filter = Builders<Entity.Account>.Filter.Eq(i => i.ID, id);
 
                 var update = Builders<Entity.Account>.Update
-                            .Set(i => i.Name, accountName)
-                            .Set(i => i.Description, accountDescription)
-                            .Set(i => i.Currency, accountCurrency);
+                            .Set(i => i.Name, name)
+                            .Set(i => i.Description, description)
+                            .Set(i => i.Currency, currency);
 
                 UpdateResult x = db.GetCollection<Entity.Account>(Collection.ACCOUNT).UpdateOne(filter, update);
 
@@ -165,13 +165,13 @@ namespace Naanayam.Data
             return result;
         }
 
-        public bool DeleteAccount(uint accountId)
+        public bool DeleteAccount(uint id)
         {
             bool result = false;
 
             try
             {
-                DeleteResult x = db.GetCollection<Entity.Account>(Collection.ACCOUNT).DeleteOne<Entity.Account>(i => i.ID.Equals(accountId));
+                DeleteResult x = db.GetCollection<Entity.Account>(Collection.ACCOUNT).DeleteOne<Entity.Account>(i => i.ID.Equals(id));
 
                 result = x.IsAcknowledged;
             }
@@ -187,7 +187,7 @@ namespace Naanayam.Data
 
         #region Transaction
 
-        public List<Transaction> GetTransactions(uint accountId, DateTime? transactionDateFrom = null, DateTime? transactionDateTo = null)
+        public List<Transaction> GetTransactions(uint accountId, string username, DateTime? from = null, DateTime? to = null)
         {
             List<Transaction> result = new List<Transaction>();
 
@@ -195,11 +195,13 @@ namespace Naanayam.Data
             {
                 var filter = Builders<Entity.Transaction>.Filter.Empty;
 
-                if (transactionDateFrom.HasValue && transactionDateTo.HasValue)
-                {
-                    var filterFromDate = Builders<Entity.Transaction>.Filter.AnyGte("timestamp", transactionDateFrom.Value);
+                filter = Builders<Entity.Transaction>.Filter.And(filter, Builders<Entity.Transaction>.Filter.Eq(i => i.Username, username));
 
-                    var filterToDate = Builders<Entity.Transaction>.Filter.AnyLte("timestamp", transactionDateTo.Value);
+                if (from.HasValue && to.HasValue)
+                {
+                    var filterFromDate = Builders<Entity.Transaction>.Filter.AnyGte("timestamp", from.Value);
+
+                    var filterToDate = Builders<Entity.Transaction>.Filter.AnyLte("timestamp", to.Value);
 
                     filter = Builders<Entity.Transaction>.Filter.And(filter, filterFromDate, filterToDate);
                 }
@@ -221,7 +223,7 @@ namespace Naanayam.Data
             return result;
         }
 
-        public bool CreateTransaction(uint transactionId, string username, uint accountId, DateTime transactionDate, int transactionType, string transactionCategory, string transactionDescription, double transactionAmount)
+        public bool CreateTransaction(uint id, string username, uint accountId, DateTime timestamp, int type, string category, string description, double amount)
         {
             bool result = false;
 
@@ -229,14 +231,14 @@ namespace Naanayam.Data
             {
                 db.GetCollection<Entity.Transaction>(Collection.TRANSACTION).InsertOne(new Entity.Transaction()
                 {
-                    ID = transactionId,
+                    ID = id,
                     Username = username,
                     Account = accountId,
-                    Timestamp = transactionDate,
-                    Description = transactionDescription,
-                    Type = transactionType,
-                    Category = transactionCategory,
-                    Amount = (int)(transactionAmount * 100)
+                    Timestamp = timestamp,
+                    Description = description,
+                    Type = type,
+                    Category = category,
+                    Amount = (int)(amount * 100)
                 });
 
                 result = true;
@@ -249,20 +251,20 @@ namespace Naanayam.Data
             return result;
         }
 
-        public bool UpdateTransaction(uint transactionId, DateTime transactionDate, int transactionType, string transactionCategory, string transactionDescription, double transactionAmount)
+        public bool UpdateTransaction(uint id, DateTime timestamp, int type, string category, string description, double amount)
         {
             bool result = false;
 
             try
             {
-                var filter = Builders<Entity.Transaction>.Filter.Eq(i => i.ID, transactionId);
+                var filter = Builders<Entity.Transaction>.Filter.Eq(i => i.ID, id);
 
                 var update = Builders<Entity.Transaction>.Update
-                            .Set(i => i.Timestamp, transactionDate)
-                            .Set(i => i.Type, transactionType)
-                            .Set(i => i.Category, transactionCategory)
-                            .Set(i => i.Description, transactionDescription)
-                            .Set(i => i.Amount, (int)(transactionAmount * 100));
+                            .Set(i => i.Timestamp, timestamp)
+                            .Set(i => i.Type, type)
+                            .Set(i => i.Category, category)
+                            .Set(i => i.Description, description)
+                            .Set(i => i.Amount, (int)(amount * 100));
 
                 UpdateResult x = db.GetCollection<Entity.Transaction>(Collection.TRANSACTION).UpdateOne(filter, update);
 
@@ -276,13 +278,13 @@ namespace Naanayam.Data
             return result;
         }
 
-        public bool DeleteTransaction(uint transactionId)
+        public bool DeleteTransaction(uint id)
         {
             bool result = false;
 
             try
             {
-                DeleteResult x = db.GetCollection<Entity.Transaction>(Collection.TRANSACTION).DeleteOne<Entity.Transaction>(i => i.ID.Equals(transactionId));
+                DeleteResult x = db.GetCollection<Entity.Transaction>(Collection.TRANSACTION).DeleteOne<Entity.Transaction>(i => i.ID.Equals(id));
 
                 result = x.IsAcknowledged;
             }
@@ -360,7 +362,7 @@ namespace Naanayam.Data
             return result;
         }
 
-        public bool CreateUser(bool userEnabled, string username, string password, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null)
+        public bool CreateUser(bool enabled, string username, string password, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null)
         {
             bool result = false;
 
@@ -368,7 +370,7 @@ namespace Naanayam.Data
             {
                 db.GetCollection<Entity.User>(Collection.USER).InsertOne(new Entity.User()
                 {
-                    Enabled = userEnabled,
+                    Enabled = enabled,
                     Username = username,
                     Password = password,
                     FirstName = firstName,
@@ -390,7 +392,7 @@ namespace Naanayam.Data
             return result;
         }
 
-        public bool UpdateUser(bool userEnabled, string username, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null)
+        public bool UpdateUser(bool enabled, string username, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null)
         {
             bool result = false;
 
@@ -399,7 +401,7 @@ namespace Naanayam.Data
                 var filter = Builders<Entity.User>.Filter.Eq(i => i.Username, username);
 
                 var update = Builders<Entity.User>.Update
-                            .Set(i => i.Enabled, userEnabled)
+                            .Set(i => i.Enabled, enabled)
                             .Set(i => i.FirstName, firstName)
                             .Set(i => i.LastName, lastName)
                             .Set(i => i.Email, email)
@@ -624,7 +626,7 @@ namespace Naanayam.Data
             return result;
         }
 
-        public bool EnableUser(string username, bool userEnabled)
+        public bool EnableUser(string username, bool enabled)
         {
             bool result = false;
 
@@ -632,7 +634,7 @@ namespace Naanayam.Data
             {
                 var filter = Builders<Entity.User>.Filter.Eq(i => i.Username, username);
 
-                var update = Builders<Entity.User>.Update.Set(i => i.Enabled, userEnabled);
+                var update = Builders<Entity.User>.Update.Set(i => i.Enabled, enabled);
 
                 UpdateResult x = db.GetCollection<Entity.User>(Collection.USER).UpdateOne(filter, update);
 

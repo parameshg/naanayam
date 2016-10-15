@@ -8,25 +8,25 @@ namespace Naanayam.Data
     {
         #region Account
 
-        Task<List<Account>> GetAccountsAsync(string accountUsername);
+        Task<List<Account>> GetAccountsAsync(string username);
 
-        Task<bool> CreateAccountAsync(uint accountId, string accountUsername, string accountName, string accountDescription, string accountCurrency);
+        Task<bool> CreateAccountAsync(uint id, string username, string name, string description, string currency);
 
-        Task<bool> UpdateAccountAsync(uint accountId, string accountName, string accountDescription, string accountCurrency);
+        Task<bool> UpdateAccountAsync(uint id, string name, string description, string currency);
 
-        Task<bool> DeleteAccountAsync(uint accountId);
+        Task<bool> DeleteAccountAsync(uint id);
 
         #endregion
 
         #region Transaction
 
-        Task<List<Transaction>> GetTransactionsAsync(uint transactionAccount, DateTime? transactionDateFrom = null, DateTime? transactionDateTo = null);
+        Task<List<Transaction>> GetTransactionsAsync(uint accountId, string username, DateTime? dateFrom = null, DateTime? dateTo = null);
 
-        Task<bool> CreateTransactionAsync(uint transactionId, string transactionUsername, uint transactionAccount, DateTime transactionDate, int transactionType, string transactionCategory, string transactionDescription, double transactionAmount);
+        Task<bool> CreateTransactionAsync(uint id, string username, uint accountId, DateTime date, int type, string category, string description, double amount);
 
-        Task<bool> UpdateTransactionAsync(uint transactionId, DateTime transactionDate, int transactionType, string transactionCategory, string transactionDescription, double transactionAmount);
+        Task<bool> UpdateTransactionAsync(uint id, DateTime timestamp, int type, string category, string description, double amount);
 
-        Task<bool> DeleteTransactionAsync(uint transactionId);
+        Task<bool> DeleteTransactionAsync(uint id);
 
         #endregion
 
@@ -38,9 +38,9 @@ namespace Naanayam.Data
 
         Task<User> GetUserByUsernameAsync(string username);
 
-        Task<bool> CreateUserAsync(bool userEnabled, string username, string password, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
+        Task<bool> CreateUserAsync(bool enabled, string username, string password, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
 
-        Task<bool> UpdateUserAsync(bool userEnabled, string username, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
+        Task<bool> UpdateUserAsync(bool enabled, string username, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
 
         Task<bool> AddUserToRoleAsync(string username, string role);
 
@@ -60,7 +60,7 @@ namespace Naanayam.Data
 
         Task<bool> ResetUserPaswordAsync(string username, string password);
 
-        Task<bool> EnableUserAsync(string username, bool userEnabled);
+        Task<bool> EnableUserAsync(string username, bool enabled);
 
         Task<bool> SetInternalUserAsync(string username);
 

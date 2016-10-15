@@ -21,9 +21,9 @@ namespace Naanayam.Server
 
         #region Transaction
 
-        Task<List<Transaction>> GetTransactionsAsync(uint accountId, DateTime? transactionDateFrom = null, DateTime? transactionDateTo = null);
+        Task<List<Transaction>> GetTransactionsAsync(DateTime? from = null, DateTime? to = null);
 
-        Task<bool> CreateTransactionAsync(uint account, DateTime timestamp, TransactionType type, string category, string description, double amount);
+        Task<bool> CreateTransactionAsync(DateTime timestamp, TransactionType type, string category, string description, double amount);
 
         Task<bool> UpdateTransactionAsync(uint id, DateTime timestamp, TransactionType type, string category, string description, double amount);
 
@@ -95,13 +95,13 @@ namespace Naanayam.Server
 
         Task<bool> DeleteUserSettingsAsync(string username, string key);
 
-        Task<bool> ResetUserPaswordAsync(string username, string password);
+        Task<bool> ResetUserPaswordAsync(string password, string username = null);
 
-        Task<bool> EnableUserAsync(string username);
+        Task<bool> EnableUserAsync(string username = null);
 
-        Task<bool> DisableUserAsync(string username);
+        Task<bool> DisableUserAsync(string username = null);
 
-        Task<bool> DeleteUserAsync(string username);
+        Task<bool> DeleteUserAsync(string username = null);
 
         #endregion
 
