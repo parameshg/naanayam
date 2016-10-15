@@ -15,6 +15,11 @@ namespace Naanayam.Web.Areas.Rest.Controllers
             
             if (User != null && User.Identity.IsAuthenticated)
                 Server.Context.Impersonate(User.Identity.Name);
+
+            var cookies = HttpContext.Current.Request.Cookies.Get("account");
+
+            if (cookies != null && !string.IsNullOrEmpty(cookies.Value))
+                Server.Context.ChangeAccount(uint.Parse(cookies.Value));
         }
     }
 }

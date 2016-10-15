@@ -70,9 +70,9 @@ namespace Naanayam.Server
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-                username = string.IsNullOrEmpty(username) ? Context.User : username;
+                username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
                 result.AddRange(Database.GetAccounts(username));
             }
@@ -91,11 +91,11 @@ namespace Naanayam.Server
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 uint id = GetNextId(ID.TRANSACTION);
 
-                result = Database.CreateAccount(id, Context.User, name, description, currency);
+                result = Database.CreateAccount(id, Context.Username, name, description, currency);
             }
             catch (Exception e)
             {
@@ -112,7 +112,7 @@ namespace Naanayam.Server
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = Database.UpdateAccount(id, name, description, currency);
             }
@@ -131,7 +131,7 @@ namespace Naanayam.Server
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = Database.DeleteAccount(id);
             }
@@ -147,16 +147,16 @@ namespace Naanayam.Server
 
         #region Transaction
 
-        public List<Transaction> GetTransactions(uint account, DateTime? transactionDateFrom = null, DateTime? transactionDateTo = null)
+        public List<Transaction> GetTransactions(DateTime? from = null, DateTime? to = null)
         {
             List<Transaction> result = new List<Transaction>();
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-                result.AddRange(Database.GetTransactions(account, transactionDateFrom, transactionDateTo));
+                result.AddRange(Database.GetTransactions(Context.Account, Context.Username, from, to));
             }
             catch (Exception e)
             {
@@ -166,18 +166,18 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool CreateTransaction(uint account, DateTime timestamp, TransactionType type, string category, string description, double amount)
+        public bool CreateTransaction(DateTime timestamp, TransactionType type, string category, string description, double amount)
         {
             bool result = false;
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 uint id = GetNextId(ID.TRANSACTION);
 
-                result = Database.CreateTransaction(id, Context.User, account, timestamp, (int)type, category, description, account);
+                result = Database.CreateTransaction(id, Context.Username, Context.Account, timestamp, (int)type, category, description, amount);
             }
             catch (Exception e)
             {
@@ -194,7 +194,7 @@ namespace Naanayam.Server
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = Database.UpdateTransaction(id, timestamp, (int)type, category, description, amount);
             }
@@ -213,7 +213,7 @@ namespace Naanayam.Server
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result = Database.DeleteTransaction(id);
             }
@@ -227,16 +227,16 @@ namespace Naanayam.Server
 
         #region Category
 
-        public List<string> GetTransactionCategories(string transactionType)
+        public List<string> GetTransactionCategories(string type)
         {
             List<string> result = new List<string>();
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-                string json = GetUserSettings(GetCategoryKey(transactionType));
+                string json = GetUserSettings(GetCategoryKey(type));
 
                 result.AddRange(Serializer<List<string>>.Current.DeserializeFromJson(json));
             }
@@ -248,27 +248,27 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool AddTransactionCategory(string transactionType, string transactionCategory)
+        public bool AddTransactionCategory(string type, string category)
         {
             bool result = false;
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 List<string> o = new List<string>();
 
-                o.AddRange(GetTransactionCategories(transactionType));
+                o.AddRange(GetTransactionCategories(type));
 
-                o.Add(transactionCategory);
+                o.Add(category);
 
                 string json = Serializer<List<string>>.Current.SerializeToJson(o);
 
-                if (IsUserSettingsExists(GetCategoryKey(transactionType)))
-                    UpdateUserSettings(GetCategoryKey(transactionType), json);
+                if (IsUserSettingsExists(GetCategoryKey(type)))
+                    UpdateUserSettings(GetCategoryKey(type), json);
                 else
-                    CreateUserSettings(GetCategoryKey(transactionType), json);
+                    CreateUserSettings(GetCategoryKey(type), json);
             }
             catch (Exception e)
             {
@@ -278,30 +278,30 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool RemoveTransactionCategory(string transactionType, string transactionCategory)
+        public bool RemoveTransactionCategory(string type, string category)
         {
             bool result = false;
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 // remove category
 
                 List<string> o = new List<string>();
 
-                o.AddRange(GetTransactionCategories(transactionType));
+                o.AddRange(GetTransactionCategories(type));
 
-                o.Remove(transactionCategory);
+                o.Remove(category);
 
                 string json = Serializer<List<string>>.Current.SerializeToJson(o);
 
-                UpdateUserSettings(GetCategoryKey(transactionType), json);
+                UpdateUserSettings(GetCategoryKey(type), json);
 
                 // remove its corresponding sub categories
 
-                DeleteUserSettings(GetCategoryKey(transactionType, transactionCategory));
+                DeleteUserSettings(GetCategoryKey(type, category));
             }
             catch (Exception e)
             {
@@ -311,16 +311,16 @@ namespace Naanayam.Server
             return result;
         }
 
-        public List<string> GetTransactionCategories(string transactionType, string transactionCategory)
+        public List<string> GetTransactionCategories(string type, string category)
         {
             List<string> result = new List<string>();
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-                result.AddRange(GetTransactionCategories(transactionType, transactionCategory));
+                result.AddRange(GetTransactionCategories(type, category));
             }
             catch (Exception e)
             {
@@ -330,25 +330,25 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool AddTransactionCategory(string transactionType, string transactionCategory, string transactionSubCategory)
+        public bool AddTransactionCategory(string type, string category, string subCategory)
         {
             bool result = false;
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 List<string> o = new List<string>();
 
-                o.AddRange(GetTransactionCategories(transactionType, transactionCategory));
+                o.AddRange(GetTransactionCategories(type, category));
 
                 string json = Serializer<List<string>>.Current.SerializeToJson(o);
 
-                if (IsUserSettingsExists(GetCategoryKey(transactionType, transactionCategory)))
-                    UpdateUserSettings(GetCategoryKey(transactionType, transactionCategory), json);
+                if (IsUserSettingsExists(GetCategoryKey(type, category)))
+                    UpdateUserSettings(GetCategoryKey(type, category), json);
                 else
-                    CreateUserSettings(GetCategoryKey(transactionType, transactionCategory), json);
+                    CreateUserSettings(GetCategoryKey(type, category), json);
             }
             catch (Exception e)
             {
@@ -358,27 +358,27 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool RemoveTransactionCategory(string transactionType, string transactionCategory, string transactionSubCategory)
+        public bool RemoveTransactionCategory(string type, string category, string subCategory)
         {
             bool result = false;
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 List<string> o = new List<string>();
 
-                o.AddRange(GetTransactionCategories(transactionType, transactionCategory));
+                o.AddRange(GetTransactionCategories(type, category));
 
-                o.Remove(transactionSubCategory);
+                o.Remove(subCategory);
 
                 string json = Serializer<List<string>>.Current.SerializeToJson(o);
 
-                if (IsUserSettingsExists(GetCategoryKey(transactionType, transactionCategory)))
-                    UpdateUserSettings(GetCategoryKey(transactionType, transactionCategory), json);
+                if (IsUserSettingsExists(GetCategoryKey(type, category)))
+                    UpdateUserSettings(GetCategoryKey(type, category), json);
                 else
-                    CreateUserSettings(GetCategoryKey(transactionType, transactionCategory), json);
+                    CreateUserSettings(GetCategoryKey(type, category), json);
             }
             catch (Exception e)
             {
@@ -399,7 +399,7 @@ namespace Naanayam.Server
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 result.AddRange(Database.GetEnumValues(Enum.Type));
             }
@@ -411,16 +411,16 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool AddTransactionType(string transactionType)
+        public bool AddTransactionType(string type)
         {
             bool result = false;
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-                result = Database.AddEnumValue(Enum.Type, transactionType);
+                result = Database.AddEnumValue(Enum.Type, type);
             }
             catch (Exception e)
             {
@@ -430,16 +430,16 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool RemoveTransactionType(string transactionType)
+        public bool RemoveTransactionType(string type)
         {
             bool result = false;
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-                result = Database.RemoveEnumValue(Enum.Type, transactionType);
+                result = Database.RemoveEnumValue(Enum.Type, type);
             }
             catch (Exception e)
             {
@@ -460,7 +460,7 @@ namespace Naanayam.Server
             long result = 0;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             result = Database.GetUserCount();
 
@@ -472,7 +472,7 @@ namespace Naanayam.Server
             List<User> result = null;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             result = Database.GetUsers((page - 1) * count, count);
 
@@ -483,7 +483,7 @@ namespace Naanayam.Server
         {
             bool result = false;
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -504,9 +504,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -528,9 +528,9 @@ namespace Naanayam.Server
             User result = null;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -545,8 +545,8 @@ namespace Naanayam.Server
         {
             bool result = false;
 
-            if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+            if (!IsUserExists())
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -587,7 +587,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -601,7 +601,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -615,7 +615,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -629,9 +629,9 @@ namespace Naanayam.Server
             List<KeyValuePair<string, string>> result = null;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -645,9 +645,9 @@ namespace Naanayam.Server
             string result = string.Empty;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -661,9 +661,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -677,9 +677,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -693,9 +693,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -709,9 +709,9 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? Context.User : username;
+            username = string.IsNullOrEmpty(username) ? Context.Username : username;
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 
@@ -720,11 +720,11 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool ChangeUserPasword(string username, string oldPassword, string newPassword)
+        public bool ChangeUserPasword(string oldPassword, string newPassword, string username = null)
         {
             bool result = false;
 
-            if (string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(Context.Username))
                 throw new InvalidParameterException("username");
 
             if (string.IsNullOrEmpty(oldPassword))
@@ -734,9 +734,9 @@ namespace Naanayam.Server
                 throw new InvalidParameterException("newPassword");
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? null : username.ToLower();
+            username = string.IsNullOrEmpty(username) ? Context.Username.ToLower() : username;
 
             User o = Database.GetUserByUsername(username);
 
@@ -755,12 +755,12 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool ResetUserPasword(string username, string password)
+        public bool ResetUserPasword(string password, string username = null)
         {
             bool result = false;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             if (string.IsNullOrEmpty(username))
                 throw new InvalidParameterException("username");
@@ -769,9 +769,9 @@ namespace Naanayam.Server
                 throw new InvalidParameterException("password");
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? null : username.ToLower();
+            username = string.IsNullOrEmpty(username) ? Context.Username : username.ToLower();
 
             password = HashPassword(password);
 
@@ -793,7 +793,7 @@ namespace Naanayam.Server
                 throw new InvalidParameterException("password");
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             User o = Database.GetUserByUsername(username);
 
@@ -823,7 +823,7 @@ namespace Naanayam.Server
                 throw new InvalidParameterException("loginProviderKey");
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             User o = Database.GetUserByUsername(username);
 
@@ -833,42 +833,42 @@ namespace Naanayam.Server
             return result;
         }
 
-        public bool EnableUser(string username)
+        public bool EnableUser(string username = null)
         {
             bool result = false;
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? null : username.ToLower();
+            username = string.IsNullOrEmpty(username) ? Context.Username : username.ToLower();
 
             result = Database.EnableUser(username, true);
 
             return result;
         }
 
-        public bool DisableUser(string username)
+        public bool DisableUser(string username = null)
         {
             bool result = false;
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? null : username.ToLower();
+            username = string.IsNullOrEmpty(username) ? Context.Username : username.ToLower();
 
             result = Database.EnableUser(username, false);
 
             return result;
         }
 
-        public bool DeleteUser(string username)
+        public bool DeleteUser(string username = null)
         {
             bool result = false;
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
-            username = string.IsNullOrEmpty(username) ? null : username.ToLower();
+            username = string.IsNullOrEmpty(username) ? Context.Username : username.ToLower();
 
             User user = GetUserByUsername(username);
 
@@ -887,18 +887,18 @@ namespace Naanayam.Server
 
         #region Reports
 
-        public List<Report.CategoryValue> GetMonthlyExpensesByCategoryReport(uint accountId, DateTime? transactionDateFrom, DateTime? transactionDateTo)
+        public List<Report.CategoryValue> GetMonthlyExpensesByCategoryReport(uint accountId, DateTime? from, DateTime? to)
         {
             List<Report.CategoryValue> result = new List<Report.CategoryValue>();
 
             try
             {
                 if (!IsUserExists())
-                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                    throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
                 List<string> categories = GetTransactionCategories(TransactionType.Expense.ToString());
 
-                List<Transaction> transactions = GetTransactions(accountId, transactionDateFrom, transactionDateTo);
+                List<Transaction> transactions = GetTransactions(from, to);
 
                 string category = string.Empty;
 
@@ -973,7 +973,7 @@ namespace Naanayam.Server
             List<KeyValuePair<string, string>> result = new List<KeyValuePair<string,string>>();
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             result.AddRange(Database.GetSettings());
 
@@ -985,7 +985,7 @@ namespace Naanayam.Server
             string result = string.Empty;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             result = Database.GetSettings(key);
 
@@ -997,7 +997,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             result = Database.CreateSettings(key, value);
 
@@ -1009,7 +1009,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             result = Database.UpdateSettings(key, value);
 
@@ -1021,7 +1021,7 @@ namespace Naanayam.Server
             bool result = false;
 
             if (!IsUserAdmin())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
             result = Database.DeleteSettings(key);
 
@@ -1100,6 +1100,7 @@ namespace Naanayam.Server
                 Database.AddEnumValue(Enum.Type, "Transfer");
 
                 Database.AddEnumValue(GetCategoryKey("Income"), "Salary");
+                Database.AddEnumValue(GetCategoryKey("Income", "Salary"), "Salary");
 
                 Database.AddEnumValue(GetCategoryKey("Expense"), "Travel");
                 Database.AddEnumValue(GetCategoryKey("Expense", "Travel"), "Bus");
@@ -1188,7 +1189,7 @@ namespace Naanayam.Server
             try
             {
                 if (!IsUserAdmin())
-                    throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.User);
+                    throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
 
                 result = Database.Purge();
             }
@@ -1251,7 +1252,7 @@ namespace Naanayam.Server
             uint result = 0;
 
             if (!IsUserExists())
-                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.User);
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             result = Database.GetNextId(name);
 
@@ -1268,13 +1269,13 @@ namespace Naanayam.Server
             return result;
         }
 
-        private string GetRandomPassword(int n)
+        private string GetRandomPassword(int count)
         {
             StringBuilder result = new StringBuilder();
 
             Random rnd = new Random(DateTime.Now.Millisecond);
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < count; i++)
             {
                 result.Append(((char)rnd.Next(33, 126)).ToString());
 
@@ -1284,14 +1285,14 @@ namespace Naanayam.Server
             return result.ToString();
         }
 
-        private string GetCategoryKey(string transactionType)
+        private string GetCategoryKey(string type)
         {
-            return string.Format("{0}", transactionType);
+            return string.Format("{0}", type);
         }
 
-        private string GetCategoryKey(string transactionType, string transactionCategory)
+        private string GetCategoryKey(string type, string category)
         {
-            return string.Format("{0}.{1}", transactionType, transactionCategory);
+            return string.Format("{0}.{1}", type, category);
         }
 
         #endregion

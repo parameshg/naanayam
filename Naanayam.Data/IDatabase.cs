@@ -19,7 +19,7 @@ namespace Naanayam.Data
 
         #region Transaction
 
-        List<Transaction> GetTransactions(uint account, DateTime? transactionDateFrom = null, DateTime? transactionDateTo = null);
+        List<Transaction> GetTransactions(uint accountId, string username, DateTime? from = null, DateTime? to = null);
 
         bool CreateTransaction(uint id, string username, uint account, DateTime timestamp, int type, string category, string description, double amount);
 
@@ -37,9 +37,9 @@ namespace Naanayam.Data
 
         User GetUserByUsername(string username);
 
-        bool CreateUser(bool userEnabled, string username, string password, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
+        bool CreateUser(bool enabled, string username, string password, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
 
-        bool UpdateUser(bool userEnabled, string username, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
+        bool UpdateUser(bool enabled, string username, string firstName, string lastName, string email, string phone, string loginProvider = null, string loginProviderKey = null);
 
         bool AddUserToRole(string username, string role);
 
@@ -59,7 +59,7 @@ namespace Naanayam.Data
 
         bool ResetUserPasword(string username, string password);
 
-        bool EnableUser(string username, bool userEnabled);
+        bool EnableUser(string username, bool enabled);
 
         bool SetInternalUser(string username);
 

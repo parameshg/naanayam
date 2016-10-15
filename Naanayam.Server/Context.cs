@@ -4,7 +4,9 @@ namespace Naanayam.Server
 {
     public class Context
     {
-        public string User { get; private set; }
+        private string _username;
+
+        public string Username { get { return _username ?? _username.ToLower(); } private set { _username = value; } }
 
         public uint Account { get; private set; }
 
@@ -13,12 +15,12 @@ namespace Naanayam.Server
             if (string.IsNullOrEmpty(user))
                 throw new NullReferenceException(ErrorMessage.EMPTY_USER_CONTEXT);
 
-            User = user;
+            Username = user;
         }
 
         public void Impersonate(string user)
         {
-            User = user;
+            Username = user;
         }
 
         public void ChangeAccount(uint account)
@@ -28,7 +30,7 @@ namespace Naanayam.Server
 
         public void Clear()
         {
-            User = string.Empty;
+            Username = string.Empty;
         }
     }
 }

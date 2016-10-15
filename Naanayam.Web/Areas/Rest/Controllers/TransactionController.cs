@@ -26,7 +26,9 @@ namespace Naanayam.Web.Areas.Rest.Controllers
                 searchTo = searchFrom.Value.AddMonths(1);
             }
 
-            result.AddRange(await Server.GetTransactionsAsync(account, searchFrom, searchTo));
+            //Server.Context.ChangeAccount(account);
+
+            result.AddRange(await Server.GetTransactionsAsync(searchFrom, searchTo));
 
             return Json(result);
         }
@@ -35,7 +37,9 @@ namespace Naanayam.Web.Areas.Rest.Controllers
         [Route("api/transaction")]
         public async Task Post(Transaction o)
         {
-            await Server.CreateTransactionAsync(o.Account, o.Timestamp, o.Type, o.Category, o.Description, o.Amount);
+            //Server.Context.ChangeAccount(o.Account);
+
+            await Server.CreateTransactionAsync(o.Timestamp, o.Type, o.Category, o.Description, o.Amount);
         }
 
         // PUT: api/account/transaction

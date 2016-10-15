@@ -19,7 +19,7 @@
                 <b>
                     @if (HttpContext.Current.User.Identity.IsAuthenticated)
                     {
-                        <p><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;@HttpContext.Current.User.Identity.Name [@Html.ActionLink("Logout", "Exit", "Login")]</p>
+                        <p><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;@HttpContext.Current.User.Identity.Name [@Html.ActionLink("Change Password", "ChangePassword", "Profile") | @Html.ActionLink("Logout", "Exit", "Login")]</p>
                     }
                     else
                     {

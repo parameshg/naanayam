@@ -28,9 +28,9 @@ namespace Naanayam.Server
 
         #region Transaction
 
-        List<Transaction> GetTransactions(uint accountId, DateTime? transactionDateFrom = null, DateTime? transactionDateTo = null);
+        List<Transaction> GetTransactions(DateTime? from = null, DateTime? to = null);
 
-        bool CreateTransaction(uint account, DateTime timestamp, TransactionType type, string category, string description, double amount);
+        bool CreateTransaction(DateTime timestamp, TransactionType type, string category, string description, double amount);
 
         bool UpdateTransaction(uint id, DateTime timestamp, TransactionType type, string category, string description, double amount);
 
@@ -102,13 +102,15 @@ namespace Naanayam.Server
 
         bool DeleteUserSettings(string username, string key);
 
-        bool ResetUserPasword(string username, string password);
+        bool ChangeUserPasword(string oldPassword, string newPassword, string username = null);
 
-        bool EnableUser(string username);
+        bool ResetUserPasword(string password, string username = null);
 
-        bool DisableUser(string username);
+        bool EnableUser(string username = null);
 
-        bool DeleteUser(string username);
+        bool DisableUser(string username = null);
+
+        bool DeleteUser(string username = null);
 
         #endregion
 

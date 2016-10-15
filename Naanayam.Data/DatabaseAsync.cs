@@ -12,7 +12,7 @@ namespace Naanayam.Data
     {
         #region Account
 
-        public async Task<List<Account>> GetAccountsAsync(string accountUsername)
+        public async Task<List<Account>> GetAccountsAsync(string username)
         {
             List<Account> result = new List<Account>();
 
@@ -32,7 +32,7 @@ namespace Naanayam.Data
             return result;
         }
 
-        public async Task<bool> CreateAccountAsync(uint accountId, string accountUsername, string accountName, string accountDescription, string accountCurrency)
+        public async Task<bool> CreateAccountAsync(uint id, string username, string name, string description, string currency)
         {
             bool result = false;
 
@@ -40,11 +40,11 @@ namespace Naanayam.Data
             {
                 await db.GetCollection<Entity.Account>(Collection.ACCOUNT).InsertOneAsync(new Entity.Account()
                 {
-                    ID = accountId,
-                    Username = accountUsername,
-                    Name = accountName,
-                    Description = accountDescription,
-                    Currency = accountCurrency
+                    ID = id,
+                    Username = username,
+                    Name = name,
+                    Description = description,
+                    Currency = currency
                 });
 
                 result = true;
@@ -57,18 +57,18 @@ namespace Naanayam.Data
             return result;
         }
 
-        public async Task<bool> UpdateAccountAsync(uint accountId, string accountName, string accountDescription, string accountCurrency)
+        public async Task<bool> UpdateAccountAsync(uint id, string name, string description, string currency)
         {
             bool result = false;
 
             try
             {
-                var filter = Builders<Entity.Account>.Filter.Eq(i => i.ID, accountId);
+                var filter = Builders<Entity.Account>.Filter.Eq(i => i.ID, id);
 
                 var update = Builders<Entity.Account>.Update
-                            .Set(i => i.Name, accountName)
-                            .Set(i => i.Description, accountDescription)
-                            .Set(i => i.Currency, accountCurrency);
+                            .Set(i => i.Name, name)
+                            .Set(i => i.Description, description)
+                            .Set(i => i.Currency, currency);
 
                 UpdateResult x = await db.GetCollection<Entity.Account>(Collection.ACCOUNT).UpdateOneAsync(filter, update);
 
@@ -82,13 +82,13 @@ namespace Naanayam.Data
             return result;
         }
 
-        public async Task<bool> DeleteAccountAsync(uint accountId)
+        public async Task<bool> DeleteAccountAsync(uint id)
         {
             bool result = false;
 
             try
             {
-                DeleteResult x = await db.GetCollection<Entity.Account>(Collection.ACCOUNT).DeleteOneAsync<Entity.Account>(i => i.ID.Equals(accountId));
+                DeleteResult x = await db.GetCollection<Entity.Account>(Collection.ACCOUNT).DeleteOneAsync<Entity.Account>(i => i.ID.Equals(id));
 
                 result = x.IsAcknowledged;
             }
@@ -104,7 +104,7 @@ namespace Naanayam.Data
 
         #region Transaction
 
-        public async Task<List<Transaction>> GetTransactionsAsync(uint accountId, DateTime? transactionDateFrom = null, DateTime? transactionDateTo = null)
+        public async Task<List<Transaction>> GetTransactionsAsync(uint accountId, string username, DateTime? from = null, DateTime? to = null)
         {
             List<Transaction> result = new List<Transaction>();
 
@@ -112,11 +112,13 @@ namespace Naanayam.Data
             {
                 var filter = Builders<Entity.Transaction>.Filter.Eq(i => i.Account, accountId);
 
-                if (transactionDateFrom.HasValue && transactionDateTo.HasValue)
-                {
-                    var filterFromDate = Builders<Entity.Transaction>.Filter.AnyGte("timestamp", transactionDateFrom.Value);
+                filter = Builders<Entity.Transaction>.Filter.And(filter, Builders<Entity.Transaction>.Filter.Eq(i => i.Username, username));
 
-                    var filterToDate = Builders<Entity.Transaction>.Filter.AnyLte("timestamp", transactionDateTo.Value);
+                if (from.HasValue && to.HasValue)
+                {
+                    var filterFromDate = Builders<Entity.Transaction>.Filter.AnyGte("timestamp", from.Value);
+
+                    var filterToDate = Builders<Entity.Transaction>.Filter.AnyLte("timestamp", to.Value);
 
                     filter = Builders<Entity.Transaction>.Filter.And(filter, filterFromDate, filterToDate);
                 }
@@ -140,7 +142,7 @@ namespace Naanayam.Data
             return result;
         }
 
-        public async Task<bool> CreateTransactionAsync(uint transactionId, string transactionUser, uint accountId, DateTime transactionDate, int transactionType, string transactionCategory, string transactionDescription, double transactionAmount)
+        public async Task<bool> CreateTransactionAsync(uint id, string username, uint accountId, DateTime timestamp, int type, string category, string description, double amount)
         {
             bool result = false;
 
@@ -148,14 +150,14 @@ namespace Naanayam.Data
             {
                 await db.GetCollection<Entity.Transaction>(Collection.TRANSACTION).InsertOneAsync(new Entity.Transaction()
                 {
-                    ID = transactionId,
-                    Username = transactionUser,
+                    ID = id,
+                    Username = username,
                     Account = accountId,
-                    Timestamp = transactionDate,
-                    Description = transactionDescription,
-                    Type = transactionType,
-                    Category = transactionCategory,
-                    Amount = (int)(transactionAmount * 100)
+                    Timestamp = timestamp,
+                    Description = description,
+                    Type = type,
+                    Category = category,
+                    Amount = (int)(amount * 100)
                 });
 
                 result = true;
@@ -168,20 +170,20 @@ namespace Naanayam.Data
             return result;
         }
 
-        public async Task<bool> UpdateTransactionAsync(uint transactionId, DateTime transactionDate, int transactionType, string transactionCategory, string transactionDescription, double transactionAmount)
+        public async Task<bool> UpdateTransactionAsync(uint id, DateTime timestamp, int type, string category, string description, double amount)
         {
             bool result = false;
 
             try
             {
-                var filter = Builders<Entity.Transaction>.Filter.Eq(i => i.ID, transactionId);
+                var filter = Builders<Entity.Transaction>.Filter.Eq(i => i.ID, id);
 
                 var update = Builders<Entity.Transaction>.Update
-                            .Set(i => i.Timestamp, transactionDate)
-                            .Set(i => i.Type, transactionType)
-                            .Set(i => i.Category, transactionCategory)
-                            .Set(i => i.Description, transactionDescription)
-                            .Set(i => i.Amount, (int)(transactionAmount * 100));
+                            .Set(i => i.Timestamp, timestamp)
+                            .Set(i => i.Type, type)
+                            .Set(i => i.Category, category)
+                            .Set(i => i.Description, description)
+                            .Set(i => i.Amount, (int)(amount * 100));
 
                 UpdateResult x = await db.GetCollection<Entity.Transaction>(Collection.TRANSACTION).UpdateOneAsync(filter, update);
 
@@ -195,13 +197,13 @@ namespace Naanayam.Data
             return result;
         }
 
-        public async Task<bool> DeleteTransactionAsync(uint transactionId)
+        public async Task<bool> DeleteTransactionAsync(uint id)
         {
             bool result = false;
 
             try
             {
-                DeleteResult x = await db.GetCollection<Entity.Transaction>(Collection.TRANSACTION).DeleteOneAsync<Entity.Transaction>(i => i.ID.Equals(transactionId));
+                DeleteResult x = await db.GetCollection<Entity.Transaction>(Collection.TRANSACTION).DeleteOneAsync<Entity.Transaction>(i => i.ID.Equals(id));
 
                 result = x.IsAcknowledged;
             }
