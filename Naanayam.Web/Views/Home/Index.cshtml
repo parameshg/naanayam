@@ -1,1 +1,8 @@
-﻿<div data-ng-view="" />
+﻿@if (Context.User.Identity.IsAuthenticated)
+{
+    <div data-ng-view="" />
+}
+else
+{
+    <img src="/images/home.jpg" width="1134" height="350" alt="Create an account for anything you want to track">
+}

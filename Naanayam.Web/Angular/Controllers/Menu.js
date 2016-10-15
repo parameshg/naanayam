@@ -1,4 +1,4 @@
-﻿app.controller("menu", function ($rootScope, $scope, $timeout, $log, $$account) {
+﻿app.controller("menu", function ($rootScope, $scope, $timeout, $cookies, $log, $$account) {
     $scope.menuAccounts = "";
     $scope.menuTransactions = "";
 
@@ -14,6 +14,7 @@
     }
 
     $scope.select = function (account) {
+        $cookies.put("account", account);
         for (var i in $rootScope.accounts) {
             if ($rootScope.accounts[i].ID === account) {
                 $rootScope.account = $rootScope.accounts[i];
