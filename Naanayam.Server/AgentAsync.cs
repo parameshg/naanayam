@@ -500,8 +500,8 @@ namespace Naanayam.Server
         {
             bool result = false;
 
-            if (!await IsUserAdminAsync())
-                throw new InsufficientPrevilegeException(ErrorMessage.INSUFFICIENT_USER_PREVILEGE, Context.Username);
+            if (!IsUserExists())
+                throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND, Context.Username);
 
             username = string.IsNullOrEmpty(username) ? null : username.ToLower();
 

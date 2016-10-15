@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Naanayam.Web.Filters;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using Naanayam.Web.Filters;
 
 namespace Naanayam.Web.Controllers
 {
@@ -14,6 +10,14 @@ namespace Naanayam.Web.Controllers
     {
         public async Task<ActionResult> Index()
         {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var account = (await Service.GetAccountsAsync()).FirstOrDefault();
+
+                if (account != null)
+                    Response.Cookies.Add(new System.Web.HttpCookie("account", account.ID.ToString()));
+            }
+
             return View();
         }
     }

@@ -1,4 +1,4 @@
-﻿var app = angular.module("app", ["ngRoute", "ngMessages", "blockUI", "ui.bootstrap"]);
+﻿var app = angular.module("app", ["ngRoute", "ngMessages", "ngCookies", "blockUI", "ui.bootstrap"]);
 
 var ALERT_DELAY = 2000;
 

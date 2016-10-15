@@ -12,14 +12,16 @@ namespace Naanayam.Web.Areas.Rest.Controllers
         public Base()
         {
             Server = DependencyResolver.Current.GetService<IServer>();
-            
+
             if (User != null && User.Identity.IsAuthenticated)
+            {
                 Server.Context.Impersonate(User.Identity.Name);
 
-            var cookies = HttpContext.Current.Request.Cookies.Get("account");
+                var cookies = HttpContext.Current.Request.Cookies.Get("account");
 
-            if (cookies != null && !string.IsNullOrEmpty(cookies.Value))
-                Server.Context.ChangeAccount(uint.Parse(cookies.Value));
+                if (cookies != null && !string.IsNullOrEmpty(cookies.Value))
+                    Server.Context.ChangeAccount(uint.Parse(cookies.Value));
+            }
         }
     }
 }
